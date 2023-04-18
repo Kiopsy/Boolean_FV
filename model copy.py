@@ -37,7 +37,7 @@ class Circuit:
 
     def __init__(self, binary_genome) -> None:
         self.binary_genome = binary_genome
-        self.gates = [] # list of gates [(gate type, input1_addr, input2_addr)...]
+        self.gates = []
         self.output_gene = None
 
     # Parse the genome according to https://www.pnas.org/doi/suppl/10.1073/pnas.0503610102/suppl_file/03610fig6.pdf
@@ -49,59 +49,94 @@ class Circuit:
             self.gates.append((gate_type, input1_addr, input2_addr))
         self.output_gene = int(self.binary_genome[-4:], 2)
 
-    def run_circuit(self, input): # x, y, w, z = input
-        # Initialize the gate values memo
-        gate_values = {i: None for i in range(len(self.gates))}
-
-        def dfs(i):
-            # Indices 0-3 correspond to input values x, y, w, and z
-            if i < 4:
-                return input[i]
-            
-            # Indices 4-15 correspond to each gate (1, ..., 12)
-            gate_idx = i - 4
-
-            # Handle gate values
-            if gate_values[gate_idx] is not None:
-                return gate_values[gate_idx]
-            
-            gate_type, input1_addr, input2_addr = self.gates[gate_idx]
-
-            # Compute the input values recursively
-            input1_val = dfs(input1_addr)
-            input2_val = dfs(input2_addr)
-
-            # Accounting for unsolvable circuits
-            if input1_val == -1 or input2_val == -1:
-                return -1
-            
-            # NAND gate properties (if any input is zero, result is 1)
-            if input1_val == 0 or input2_val == 0:
-                return 1
-            
-            output_val = operations[gate_type](input1_val, input2_val)
-            gate_values[gate_idx] = output_val
-            return output_val
+    def run_circuit(self, input):
         
-        # Run DFS by starting from the output then solving the circuit inwards
-        return dfs(self.output_gene)
-         
-    # Fitness of a circuit to a goal function
+        
+        
+
+    # Returns the fitness of a circuit defined as the fraction of correct outputs over all possible inputs
+    # Fitness defined in https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1000206&type=printable
     def fitness(self, goal):
-        # TODO: Set an extra penalty for non-effective (no direct path to output) gates (https://pubmed.ncbi.nlm.nih.gov/16174729/)
+        # Set an extra penalty for non-effective (no direct path to output) gates
+
         input_values = list(product([0, 1], repeat=len(circuit_inputs)))
         eval_score = 0
 
-        # Fitness defined as the fraction of correct outputs over all possible inputs (https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1000206&type=printable)
         for input in input_values:
             goal_output = goal(input)
-            circuit_output = self.run_circuit(input)
-            eval_score += (goal_output == circuit_output)
+            circuit_output, penalty = self.run_circuit(input)
+
+            eval_score += (goal_output == circuit_output) - penalty
 
         return eval_score / len(input_values)
 
-binary_genome = "00010101110001010111"
-"""
+
+
+    """  
+    def __init__(self, inputs = {i: 0 for i in circuit_inputs}, output=MAX_GATES - 1) -> None:
+        self.string_encoding = ''
+        self.inputs = inputs # Inputs to the circuit
+        self.gates = [Gate("NAND", set()) for _ in range(MAX_GATES)] # TODO: switch to non-NAND ops here or pass 
+        self.output = output # Output gate index
+
+        curr_edge_count = 0
+        start_nodes = list(chain(inputs.keys(), range(MAX_GATES)))
+        self.edges = {i: None for i in start_nodes}
+
+        # Connect each start_node once
+        for start in start_nodes:
+            # Skip over connecting output gate
+            if start == self.output:
+                continue
+
+            # Ensure each gate has at most two inputs
+            while len(self.edges[end]) < 2:
+                end = random.randint(0, MAX_GATES)
+
+            # Add to the gate's input
+            self.gates[end].inputs.add(start)
+            self.edges[start].add(end)
+            curr_edge_count += 1
+
+        # Ensure all inputs are connected...allow for self loops and feedback loops
+        while curr_edge_count < 2 * MAX_GATES:
+            # Choose a random starting node
+            start = random.choice(start_nodes)
+
+            # Connect it to an endpoint without two inputs
+            end = random.choice([k for k, v in self.edges.items() if len(v) < 2])
+
+            # Add to the gate's input
+            self.gates[end].inputs.add(start)
+            self.edges[start].add(end)
+            curr_edge_count += 1
+    """
+
+    # Runs the circuit based on a particular input
+    def run_circuit(input):
+        # A fitness penalty of 0.2 was given for every gate above apredefined number of effective gates 
+        penalty = 0 
+        """
+        A fitness penalty of 0.2 was given for every gate above a predefined number
+        of effective gates (11 gates for the circuits in Fig.2), where we define
+        ‘‘effective gates’’ as gates with a directed path to the output.
+        """
+
+        # BFS
+        visited = set()
+        queue = deque([start_vertex])
+        visited[start_vertex] = True
+
+        while queue:
+            curr_vertex = queue.popleft()
+            print(curr_vertex)
+
+            for neighbor in self.adj_list[curr_vertex]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    queue.append(neighbor)
+        
+        return penalty
 
 # Define the possible values for the inputs and outputs
 values = [0, 1]
@@ -167,4 +202,3 @@ fitness = evaluate_circuit(current_circuit, current_goal)
 # Print the results
 print("Current circuit: ", current_circuit)
 print("Current fitness: ", fitness)
-"""
