@@ -1,4 +1,5 @@
 import random
+from itertools import chain, product
 
 # Define the allowed operations
 operations = {"XOR": lambda x, y: not (x or y), 
@@ -27,7 +28,7 @@ max_generations = 10**5
 MAX_GATES = 12
 
 # Define the input and output variables
-inputs = ["x", "y", "w", "z"]
+circuit_inputs = ["x", "y", "w", "z"]
 output = "u"
 
 # An individual gate of any operation type
@@ -44,28 +45,57 @@ class Gate:
 
             self.output = operations[self.type](self.inputs[0], self.inputs[1])
 
-# A logic circuit comprised of MAX_GATE 
+# A logic circuit (digraph)
 class Circuit:
-    def __init__(self) -> None:
-        # Initialize the gates and randomize the connections
-        self.gates = [Gate("NAND", [None, None]) for i in range(MAX_GATES + 1)]
-        self.output = Gate("NAND", [None, None])
+    def __init__(self, inputs = {i: 0 for i in circuit_inputs}, output=MAX_GATES - 1) -> None:
+        self.inputs = inputs # Inputs to the circuit
+        self.gates = [Gate("NAND", set()) for _ in range(MAX_GATES)] # TODO: switch to non-NAND ops here
+        self.output = output # Output gate index
 
-        for gate
+        curr_edge_count = 0
+        start_nodes = list(chain(inputs.keys(), range(MAX_GATES)))
+        self.edges = {i: None for i in start_nodes}
 
-        
+        # Connect each start_node once
+        for start in start_nodes:
+            # Skip over connecting output gate
+            if start == self.output:
+                continue
 
+            # Ensure each gate has at most two inputs
+            while len(self.edges[end]) < 2:
+                end = random.randint(0, MAX_GATES)
 
+            # Add to the gate's input
+            self.gates[end].inputs.add(start)
+            self.edges[start].add(end)
+            curr_edge_count += 1
 
+        # Ensure all inputs are connected...allow for self loops and feedback loops
+        while curr_edge_count < 2 * MAX_GATES:
+            # Choose a random starting node
+            start = random.choice(start_nodes)
 
+            # Connect it to an endpoint without two inputs
+            end = random.choice([k for k, v in self.edges.items() if len(v) < 2])
 
+            # Add to the gate's input
+            self.gates[end].inputs.add(start)
+            self.edges[start].add(end)
+            curr_edge_count += 1
 
-
-
-
-    def eval_fitness(goal_function):
-
+    def eval_circuit(self, goal):
         # Set an extra penalty for non-effective (no direct path to output) gates
+        # The fitness of each circuit was defined as the fraction of correct outputs over all possible inputs
+
+        input_values = [(0, 0), (0, 1), (1, 0), (1, 1)]
+        eval_score = 0
+
+        for input in input_values:
+            output_goal = goal(input)
+
+        return eval_score / len(input_values)
+
 
 
 
