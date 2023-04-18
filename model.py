@@ -12,8 +12,48 @@ operations = {"XOR": lambda x, y: not (x or y),
 			  "AND": lambda x, y: x and y,
 			  "OR": lambda x, y: x or y}
 
+# Define the population individuals 
+pop_size = 5000
+
+# Define the length of the binary genome in bits 
+gene_length = 104
+
+# Define the probability of genome crossover
+crossover_rate = 0.5
+
+# Define the probability of a gene mutation
+mutation_rate = 0.7 / gene_length
+
+# Define the number of generations to evolve the population
+max_generations = 10**5
+
 # Define the maximum number of gates in the circuit
+# From the paper, curcuits were composed of NAND gands
 max_gates = 12
+
+individuals = 
+
+
+def initialization():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Define the input and output variables
 inputs = ["x", "y", "w", "z"]
