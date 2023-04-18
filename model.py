@@ -1,5 +1,6 @@
 import random
 from itertools import chain, product
+from collections import deque
 
 # Define the allowed operations
 operations = {"XOR": lambda x, y: not (x or y), 
@@ -49,7 +50,7 @@ class Gate:
 class Circuit:
     def __init__(self, inputs = {i: 0 for i in circuit_inputs}, output=MAX_GATES - 1) -> None:
         self.inputs = inputs # Inputs to the circuit
-        self.gates = [Gate("NAND", set()) for _ in range(MAX_GATES)] # TODO: switch to non-NAND ops here
+        self.gates = [Gate("NAND", set()) for _ in range(MAX_GATES)] # TODO: switch to non-NAND ops here or pass 
         self.output = output # Output gate index
 
         curr_edge_count = 0
@@ -84,15 +85,39 @@ class Circuit:
             self.edges[start].add(end)
             curr_edge_count += 1
 
-    def eval_circuit(self, goal):
-        # Set an extra penalty for non-effective (no direct path to output) gates
-        # The fitness of each circuit was defined as the fraction of correct outputs over all possible inputs
+    # Runs the circuit based on a particular input
+    def run_circuit(input):
+        # A fitness penalty of 0.2 was given for every gate above apredefined number of effective gates 
+        penalty = 0 # TODO How?!?!
 
-        input_values = [(0, 0), (0, 1), (1, 0), (1, 1)]
+        # BFS
+        visited = set()
+        queue = deque([start_vertex])
+        visited[start_vertex] = True
+
+        while queue:
+            curr_vertex = queue.popleft()
+            print(curr_vertex)
+
+            for neighbor in self.adj_list[curr_vertex]:
+                if not visited[neighbor]:
+                    visited[neighbor] = True
+                    queue.append(neighbor)
+        
+        return penalty
+
+    # Returns the fitness of a circuit defined as the fraction of correct outputs over all possible inputs
+    def fitness(self, goal):
+        # Set an extra penalty for non-effective (no direct path to output) gates
+
+        input_values = list(product([0, 1], repeat=len(circuit_inputs)))
         eval_score = 0
 
         for input in input_values:
-            output_goal = goal(input)
+            goal_output = goal(input)
+            circuit_output, penalty = self.run_circuit(input)
+
+            eval_score += (goal_output == circuit_output) - penalty
 
         return eval_score / len(input_values)
 
