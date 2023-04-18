@@ -88,7 +88,12 @@ class Circuit:
     # Runs the circuit based on a particular input
     def run_circuit(input):
         # A fitness penalty of 0.2 was given for every gate above apredefined number of effective gates 
-        penalty = 0 # TODO How?!?!
+        penalty = 0 
+        """
+        A fitness penalty of 0.2 was given for every gate above a predefined number
+        of effective gates (11 gates for the circuits in Fig.2), where we define
+        ‘‘effective gates’’ as gates with a directed path to the output.
+        """
 
         # BFS
         visited = set()
