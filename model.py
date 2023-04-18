@@ -1,13 +1,8 @@
 import random
 
-# Circuits were composed of up to
-
-# https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000206#s4 
-# https://www.pnas.org/doi/full/10.1073/pnas.0503610102
-# https://www.pnas.org/doi/abs/10.1073/pnas.0611630104
-
 # Define the allowed operations
 operations = {"XOR": lambda x, y: not (x or y), 
+              "NAND": lambda x, y: not (x and y),
 			  "EQ": lambda x, y: x == y, 
 			  "AND": lambda x, y: x and y,
 			  "OR": lambda x, y: x or y}
@@ -29,9 +24,50 @@ max_generations = 10**5
 
 # Define the maximum number of gates in the circuit
 # From the paper, curcuits were composed of NAND gands
-max_gates = 12
+MAX_GATES = 12
 
-individuals = 
+# Define the input and output variables
+inputs = ["x", "y", "w", "z"]
+output = "u"
+
+# An individual gate of any operation type
+class Gate:
+    def __init__(self, gate_type, inputs):
+        self.type = gate_type
+        self.inputs = inputs
+        self.output = None
+
+    def evaluate(self):
+        if self.output is not None:
+            return self.output
+        else:
+
+            self.output = operations[self.type](self.inputs[0], self.inputs[1])
+
+# A logic circuit comprised of MAX_GATE 
+class Circuit:
+    def __init__(self) -> None:
+        # Initialize the gates and randomize the connections
+        self.gates = [Gate("NAND", [None, None]) for i in range(MAX_GATES + 1)]
+        self.output = Gate("NAND", [None, None])
+
+        for gate
+
+        
+
+
+
+
+
+
+
+
+
+    def eval_fitness(goal_function):
+
+        # Set an extra penalty for non-effective (no direct path to output) gates
+
+
 
 
 def initialization():
@@ -51,21 +87,13 @@ def initialization():
 
 
 
-
-
-
-
-# Define the input and output variables
-inputs = ["x", "y", "w", "z"]
-output = "u"
-
 # Define the possible values for the inputs and outputs
 values = [0, 1]
 
 # Define the function to generate a random circuit
 def generate_circuit():
     circuit = []
-    for i in range(random.randint(1, max_gates)):
+    for i in range(random.randint(1, MAX_GATES)):
         gate = (random.choice(list(operations.keys())), random.randint(0, 3), random.randint(0, 3))
         circuit.append(gate)
     return circuit
