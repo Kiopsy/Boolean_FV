@@ -1,5 +1,20 @@
 import random
 
+# Define the population individuals 
+N_pop = 5000
+
+# Define the length of the binary genome in bits 
+B = 104
+
+# Define the probability of genome crossover
+Pc = 0.5
+
+# Define the probability of a gene mutation
+Pm = 0.7 / B
+
+# Define the number of generations to evolve the population
+L = 10**5
+
 # Initialize population
 def init_population(pop_size, gene_length):
     population = []
