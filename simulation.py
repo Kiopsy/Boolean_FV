@@ -1,6 +1,8 @@
 import random
 from helpers import OPERATIONS
 from circuit import Circuit
+import numpy as np
+from goal import Goal
 
 # Define the population individuals 
 N_pop = 5000
@@ -21,72 +23,71 @@ L = 10**5
 # From the paper, curcuits were composed of NAND gands
 MAX_GATES = 12
 
-GENOME_LENGTH = MAX_GATES * 6 + 4
+goal = Goal(g = "XOR", f = "OR", h = "XOR")
 
-# Define the goals as specified
-def g(x, y):
-    return random.choice([OPERATIONS["XOR"], OPERATIONS["EQ"]])(x, y)
+def get_goal():
+    global goal
 
-def h(w, z):
-    return random.choice([OPERATIONS["XOR"], OPERATIONS["EQ"]])(w, z)
+    if random.random() < 0: # 1/20:
+        goal = Goal(g = random.choice(["XOR", "EQ"]), f = random.choice(["AND", "OR"]), h = random.choice(["XOR", "EQ"]))
 
-def f(a, b):
-    return random.choice([OPERATIONS["AND"], OPERATIONS["OR"]])(a, b)
+    return goal
 
-# Define the function to generate a new goal every E generations
-def get_goal(t):
-    if t % 20 == 0:
-        return lambda x, y, w, z: f(g(x, y), h(w, z))
-    else:
-        return current_goal
-
-# Initialize the current goal and circuit
-current_goal = lambda x, y, w, z: f(g(x, y), h(w, z))
 
 # Initialize population of circuits
-def init_population(pop_size):
+def init_population(pop_size: int) -> list[Circuit]:
     population = []
     for i in range(pop_size):
-        individual_binary = "".join([str(random.randint(0, 1)) for _ in range(GENOME_LENGTH)])
+        individual_binary = "".join([str(random.randint(0, 1)) for _ in range(B)])
         population.append(Circuit(individual_binary))
     return population
 
-# Select parents
-def select_parents(population, fitness_func):
-    fitnesses = [individual.fitness(fitness_func) for individual in population]
-    total_fitness = sum(fitnesses)
-    probabilities = [fitness/total_fitness for fitness in fitnesses]
-    parents = random.choices(population, weights=probabilities, k=2)
+def calculate_fitness(population: list[Circuit], goal: Goal) -> list[float]:
+    return [individual.fitness(goal) for individual in population]
+
+def calculate_selection_weights(fitness_list: list[float]) -> list[float]:
+    t = 30
+    exp_values = np.exp(np.array(fitness_list) * t)
+    return list(exp_values / np.sum(exp_values))
+
+def select_parents(population: list[Circuit], selection_weights: list[float]) -> list[Circuit]:
+    parents = random.choices(population, weights=selection_weights, k=2)
     return parents
 
-# Crossover
-def crossover(parents, crossover_rate):
-    if random.random() < crossover_rate:
-        crossover_point = random.randint(1, len(parents[0])-1)
-        child1 = parents[0][:crossover_point] + parents[1][crossover_point:]
-        child2 = parents[1][:crossover_point] + parents[0][crossover_point:]
-        return [child1, child2]
+# Mutation
+def mutate(genome: str) -> str:
+    int_genome = [int(c) for c in genome]
+    for i in range(len(genome)):
+        if random.random() < Pm:
+            int_genome[i] = 1 - int_genome[i]
+    return "".join([str(i) for i in int_genome])
+
+# Crossover and mutate
+def reproduce(parents: list[Circuit]) -> list[Circuit]:
+    if random.random() < Pc:
+        crossover_point = random.randint(1, len(parents[0].binary_genome)-1)
+        child1_genome = parents[0].binary_genome[:crossover_point] + parents[1].binary_genome[crossover_point:]
+        child2_genome = parents[1].binary_genome[:crossover_point] + parents[0].binary_genome[crossover_point:]
+        return [Circuit(mutate(child1_genome)), Circuit(mutate(child2_genome))]
     else:
         return parents
 
-# Mutation
-def mutate(individual, mutation_rate):
-    for i in range(len(individual)):
-        if random.random() < mutation_rate:
-            individual[i] = 1 - individual[i]
-    return individual
+
 
 # Genetic algorithm
-def genetic_algorithm(pop_size, fitness_func, crossover_rate, mutation_rate, max_generations):
-    population = init_population(pop_size)
-    for i in range(max_generations):
-        parents = select_parents(population, fitness_func)
-        children = crossover(parents, crossover_rate)
-        new_population = [mutate(child, mutation_rate/gene_length) for child in children]
+def genetic_algorithm():
+    population = init_population(N_pop)
+    for l in range(L):
+        current_goal = get_goal()
+        fitness_list = calculate_fitness(population, current_goal)
+        print(f"Gen {l+1}: Max fitness = {max(fitness_list)}; Avg fitness = {sum(fitness_list)/len(fitness_list)}")
+        selection_weights = calculate_selection_weights(fitness_list)
+        new_population = []
+        for i in range(N_pop//2):
+            parents = select_parents(population, selection_weights)
+            children = reproduce(parents)
+            new_population.extend(children)
         population = new_population
-    best_individual = max(population, key=fitness_func)
-    return best_individual
 
-# Example usage for logic circuits model
-best_individual = genetic_algorithm(N_pop, current_goal, Pc, Pm, L)
-print(best_individual.gates)
+    return None
+
