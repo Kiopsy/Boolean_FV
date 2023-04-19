@@ -3,10 +3,6 @@ from itertools import chain, product
 from collections import deque
 from helpers import OPERATIONS
 
-# Define the maximum number of gates in the circuit
-# From the paper, curcuits were composed of NAND gands
-MAX_GATES = 12
-
 # Define the input and output variables
 circuit_inputs = ["x", "y", "w", "z"]
 output = "u"
