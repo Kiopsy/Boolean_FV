@@ -13,7 +13,7 @@ output = "u"
 
 # A logic circuit
 class Circuit:
-	def __init__(self, binary_genome) -> None:
+	def __init__(self, binary_genome, silent=True) -> None:
 		self.binary_genome = binary_genome
 		self.gates = [] 
 		self.output_gene = None
@@ -26,9 +26,8 @@ class Circuit:
 			input2_addr = int(self.binary_genome[i+6:i+10], 2)
 			self.gates.append([gate_type, input1_addr, input2_addr])
 		self.output_gene = int(self.binary_genome[-4:], 2)
-		
-		
-	def run_circuit_2(self, inputs):
+			
+	def run_circuit(self, inputs):
 		addr_to_output = dict()
 		for i, val in enumerate(inputs):
 			addr_to_output[i] = [val]
@@ -85,7 +84,7 @@ class Circuit:
 
 			# return output
 			visited.remove(gate_index)
-			return x
+			return int(x)
 
 		try:
 			output = dfs(self.output_gene)
@@ -94,3 +93,19 @@ class Circuit:
 			output = None
 
 		return output 
+	
+	# Returns the fitness of a circuit defined as the fraction of correct outputs over all possible inputs
+    # Fitness defined in https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1000206&type=printable
+	def fitness(self, goal):
+		# TODO: Set an extra penalty for non-effective (no direct path to output) gates
+
+		input_values = list(product([0, 1], repeat=len(circuit_inputs)))
+		eval_score = 0
+
+		for input in input_values:
+			goal_output = goal(input)
+			circuit_output = self.run_circuit(input)
+
+			eval_score += (goal_output == circuit_output)
+
+		return eval_score / len(input_values)

@@ -26,11 +26,7 @@ def init_population(pop_size, gene_length):
 # Evaluate fitness
 def fitness_logic_circuits(individual):
     # implement logic circuits fitness function here
-    return fitness
-
-def fitness_RNA(individual):
-    # implement RNA fitness function here
-    return fitness
+    return individual.fitness
 
 # Select parents
 def select_parents(population, fitness_func):
