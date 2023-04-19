@@ -114,6 +114,15 @@ class Circuit:
 
 		return eval_score / len(inputs)
 	
+	def get_truth_table(self) -> dict[tuple[int, int, int, int], int]:
+		inputs = list(itertools.product([1, 0], repeat=4))
+		table = dict()
+		
+		for input_set in inputs:
+			table[input_set] = self.run_circuit(input_set)
+		
+		return table
+	
 
 	def __repr__(self):
 		pass
