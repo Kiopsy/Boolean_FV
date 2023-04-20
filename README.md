@@ -6,7 +6,7 @@ The goal of this project is to convert a binary genome into a logic circuit comp
 
 To achieve this goal, we convert a binary genome into a NAND logic circuit using the following methodology:
 
-<img src='binary_encoding.png' width='800'/>
+<img src='/supplementals/binary_encoding.png' width='800'/>
 
 ## Installation and Setup
 Python version 3.7+ is required: the latest version of Python can be installed [here](https://www.python.org/downloads/). Most of the libraries used are standard library functions, but numpy, matplotlib, and networkx are also used. However, all the requirements are listed in the file `requirements.txt`. Download all requirements for this repository by running the following command:
@@ -60,4 +60,4 @@ A perfectly learned logic circuit to the goal function g(x,y,z,w) = (x XOR y) OR
 
 Respective binary genome: 0011011111110110101100111010010001100110010111100000010000101000011100110001111000011110100011110000000011010000000100010111
 
-<img src='perfect_fit_XOR_OR_XOR_circuit.PNG' width='1000' />
+<img src='/supplementals/perfect_fit_XOR_OR_XOR_circuit.PNG' width='1000' />
