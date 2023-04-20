@@ -1,1 +1,0 @@
-{'CHANGING_GOAL': True, 'N_pop': 5000, 'B': 124, 'Pc': 0.5, 'L': 100000, 'MAX_GATES': 12, 'G': 20, 'Pm': 0.00564516129032258, 't': 30, 'INIT_GOAL': ('EQ', 'OR', 'XOR'), 'GOALS': [('XOR', 'OR', 'XOR'), ('EQ', 'OR', 'XOR'), ('XOR', 'OR', 'EQ')]}
