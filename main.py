@@ -1,4 +1,3 @@
-from circuit import Circuit
 from simulation import genetic_algorithm
 
 if __name__ == '__main__':

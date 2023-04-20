@@ -10,15 +10,18 @@ def add_to_csv(file_path, data):
 
 
 def create_graph(gates, output):
+    
+
+    return 
     TARGET = "O"
     GATE = "NAND"
 
-     # Create a graph
+    # Create a graph
     G = nx.DiGraph()
 
     # Add nodes
     inputs = ["x", "y", "z", "w"]
-    nodes = inputs + [f"{GATE}_{i+len(inputs)}" for i in range(len(gates))] + [14, 15]
+    nodes = inputs + [f"{GATE}_{i+len(inputs)}" for i in range(len(gates))] + [f"{GATE}_14", f"{GATE}_15"]
     nodes[output] = TARGET # output is target node
     G.add_nodes_from(nodes)
 
@@ -30,19 +33,13 @@ def create_graph(gates, output):
     G.add_edges_from(edge_list)
 
     # Remove gates that should not exist
-    for i, gate in enumerate(gates):
+    for i, (gate, _, _) in enumerate(gates):
         if gate != "NAND":
-            G.remove_node(f"{GATE}_{i+len(inputs)}")
-    
-    # Find the set of nodes connected to the target node
-    connected_nodes = set(nx.node_connected_component(G, TARGET))
-
-    # Extract the subgraph containing only the connected nodes
-    subgraph = G.subgraph(connected_nodes)
-
-    # Remove all nodes in the original graph that are not in the subgraph
-    G.remove_nodes_from(set(G.nodes()) - set(subgraph.nodes()))
+            try:
+                G.remove_node(f"{GATE}_{i+len(inputs)}")
+            except Exception as e:
+                print(e)
 
     # Plot the graph
-    nx.draw(G, with_labels=True, node_color=['blue' if n != TARGET else 'red' for n in G.nodes()])
+    nx.draw(G, with_labels=True)
     plt.show()

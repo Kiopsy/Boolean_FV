@@ -11,8 +11,7 @@ class Goal:
         inputs = list(itertools.product([1, 0], repeat=4))
         for input_set in inputs:
             x, y, w, z = input_set
-            self.truth_table[(x, y, w, z)] = self.func(x, y, w, z)
-
+            self.truth_table[(x, y, w, z)] = int(self.func(x, y, w, z))
 
     def __repr__(self):
         return self.str

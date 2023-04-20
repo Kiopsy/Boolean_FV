@@ -122,7 +122,3 @@ class Circuit:
 			table[input_set] = self.run_circuit(input_set)
 		
 		return table
-	
-
-	def __repr__(self):
-		pass
