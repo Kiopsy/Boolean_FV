@@ -8,7 +8,7 @@ def print_table(table):
 
 def main():
     GENOME = input("Genome: ").strip()
-    GOAL = input("G/F/H: ").strip().upper()
+    GOAL = input("Goal G/F/H (optional): ").strip().upper()
 
     c = Circuit(GENOME)
 
@@ -23,9 +23,20 @@ def main():
         input(f"GOAL [{goal}] TRUTH TABLE: [enter]")
         print_table(goal.truth_table)
         print("\n")
-
+    
+    input("CIRCUIT GATES: [enter]")
+    print({i: v for i,v in enumerate(["x", "y", "z", "w"] + c.gates)})
+    print("\n")
+    
     input("CIRCUIT GRAPH: [enter]")
-    create_graph(c.gates, c.output_gene)
+    while True:
+        create_graph(c.gates, c.output_gene)
+
+        repeat = input("New graph? ").strip().lower()
+        if "n" in repeat or "q" in repeat:
+            break
+
+
 
 if __name__ == "__main__":
     # create_graph([], 0)

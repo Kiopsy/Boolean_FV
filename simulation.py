@@ -35,9 +35,9 @@ class Simulation:
         exp_values = np.exp(np.array(fitness_list) * self.SETTINGS.t)
         return list(exp_values / np.sum(exp_values))
 
-    def select_parents(self, population: list[Circuit], selection_weights: list[float]) -> list[Circuit]:
+    def select_parents(self, population: list[Circuit], selection_weights: list[float]) -> list[str]:
         parents = random.choices(population, weights=selection_weights, k=2)
-        return parents
+        return [p.binary_genome for p in parents]
 
     # Mutation
     def mutate(self, genome: str) -> str:
@@ -48,14 +48,14 @@ class Simulation:
         return "".join([str(i) for i in int_genome])
 
     # Crossover and mutate
-    def reproduce(self, parents: list[Circuit]) -> list[Circuit]:
+    def reproduce(self, parents: list[str]) -> list[Circuit]:
         if random.random() < self.SETTINGS.Pc:
-            crossover_point = random.randint(1, len(parents[0].binary_genome)-1)
-            child1_genome = parents[0].binary_genome[:crossover_point] + parents[1].binary_genome[crossover_point:]
-            child2_genome = parents[1].binary_genome[:crossover_point] + parents[0].binary_genome[crossover_point:]
+            crossover_point = random.randint(1, len(parents[0])-1)
+            child1_genome = parents[0][:crossover_point] + parents[1][crossover_point:]
+            child2_genome = parents[1][:crossover_point] + parents[0][crossover_point:]
             return [Circuit(self.mutate(child1_genome)), Circuit(self.mutate(child2_genome))]
         else:
-            return parents
+            return [Circuit(self.mutate(p)) for p in parents]
 
     # Genetic algorithm
     def genetic_algorithm(self):
@@ -89,7 +89,12 @@ class Simulation:
                 with open(f"{dir}/settings.txt", mode="w") as f:
                     f.write(str(self.SETTINGS))
                 
-                with open(f"{dir}/{gen}.pkl", "wb") as f:
+                if gen < 1000:
+                    filename = f"{SETTINGS_HASH}_{gen}"
+                else:
+                    filename = f"{SETTINGS_HASH}_{gen // 1000}k"
+
+                with open(f"{dir}/{filename}.pkl", "wb") as f:
                     pickle.dump(checkpoint, f)
 
             current_goal = self.get_goal(current_goal)
@@ -100,7 +105,7 @@ class Simulation:
             _norm = (_max - _avg) / (1 - _avg)
             _max_genome = population[fitness_list.index(_max)].binary_genome
 
-            print(f"Gen {gen}: max = {_max}, avg = {_avg}, norm = {_norm}")
+            print(f"Gen {gen} of {SETTINGS_HASH}: max = {_max}, avg = {_avg}")
             add_to_csv(FILE_PATH, [gen, _max, _avg, _norm, _max_genome])
 
             selection_weights = self.calculate_selection_weights(fitness_list)
