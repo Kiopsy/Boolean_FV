@@ -16,7 +16,7 @@ pip install -r requirements.txt
 
 ## Instructions
 ### Learning Simulation
-To conduct experiments and test the [Theory of Facilitated Variation](https://www.pnas.org/doi/10.1073/pnas.0701035104#:~:text=In%20answer%2C%20the%20theory%20of,variety%20of%20regulatory%20targets%20for), switch between fixed goals (FG) and modularly varying goals (MVG) by changing the constants in the constants.py file. To switch to MVG, set the constant CHANGING_GOAL to True. To run the simulation and learn logic circuits that fit the goal function, use the following command in the terminal:
+To conduct experiments and test the [Theory of Facilitated Variation](https://www.pnas.org/doi/10.1073/pnas.0701035104#:~:text=In%20answer%2C%20the%20theory%20of,variety%20of%20regulatory%20targets%20for), switch between **fixed goals (FG)** and **modularly varying goals (MVG)** by changing the constants in the `constants.py` file. To switch to MVG, set the constant `CHANGING_GOAL` to `True`. To run the simulation and learn logic circuits that fit the goal function, use the following command in the terminal:
 
 ```bash
 python main.py
