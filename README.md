@@ -9,7 +9,7 @@ To achieve this goal, we convert a binary genome into a NAND logic circuit using
 <img src='/supplementals/binary_encoding.png' width='800'/>
 
 ## Installation and Setup
-Python version 3.7+ is required: the latest version of Python can be installed [here](https://www.python.org/downloads/). Most of the libraries used are standard library functions, but numpy, matplotlib, and networkx are also used. However, all the requirements are listed in the file `requirements.txt`. Download all requirements for this repository by running the following command:
+Python version 3.7+ is required: the latest version of Python can be installed [here](https://www.python.org/downloads/). The program relies on Python's standard libraries, as well as external libraries including numpy, matplotlib, and networkx. However, all the requirements are listed in the file `requirements.txt`. Download all requirements for this repository by running the following command:
 ```bash
 pip install -r requirements.txt
 ```
