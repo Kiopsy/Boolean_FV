@@ -53,14 +53,14 @@ class Simulation:
         return "".join([str(i) for i in int_genome])
 
     # Crossover and mutate
-    def reproduce(self, parents: list[str]) -> list[Circuit]:
+    def reproduce(self, parent_genomes: list[str]) -> list[Circuit]:
         if random.random() < self.SETTINGS.Pc:
-            crossover_point = random.randint(1, len(parents[0])-1)
-            child1_genome = parents[0][:crossover_point] + parents[1][crossover_point:]
-            child2_genome = parents[1][:crossover_point] + parents[0][crossover_point:]
+            crossover_point = random.randint(1, len(parent_genomes[0])-1)
+            child1_genome = parent_genomes[0][:crossover_point] + parent_genomes[1][crossover_point:]
+            child2_genome = parent_genomes[1][:crossover_point] + parent_genomes[0][crossover_point:]
             return [Circuit(self.mutate(child1_genome)), Circuit(self.mutate(child2_genome))]
         else:
-            return [Circuit(self.mutate(p)) for p in parents]
+            return [Circuit(self.mutate(p)) for p in parent_genomes]
 
     # Genetic algorithm
     def genetic_algorithm(self):
