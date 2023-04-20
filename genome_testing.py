@@ -1,6 +1,6 @@
 from circuit import Circuit
 from goal import Goal
-from recorder import create_graph
+from aux import create_graph
 
 def print_table(table):
     for i, (k, v) in enumerate(table.items()):
@@ -8,7 +8,7 @@ def print_table(table):
 
 def main():
     GENOME = input("Genome: ").strip()
-    GOAL = input("F/G/H: ").strip().capitalize()
+    GOAL = input("G/F/H: ").strip().upper()
 
     c = Circuit(GENOME)
 
@@ -18,7 +18,7 @@ def main():
     print("\n")
 
     if GOAL:
-        f, g, h = GOAL.split("/")
+        g, f, h = GOAL.split("/")
         goal = Goal(g, f, h)
         input(f"GOAL [{goal}] TRUTH TABLE: [enter]")
         print_table(goal.truth_table)
@@ -28,5 +28,5 @@ def main():
     create_graph(c.gates, c.output_gene)
 
 if __name__ == "__main__":
-    create_graph([], 0)
-    #main()
+    # create_graph([], 0)
+    main()

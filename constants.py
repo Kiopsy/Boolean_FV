@@ -1,4 +1,6 @@
-class Constants:
+import datetime
+
+class SimulationSettings:
     # If the goal is being changed or not
     CHANGING_GOAL = False
 
@@ -24,6 +26,21 @@ class Constants:
     # Define the probability of a gene mutation
     Pm = 0.7 / B
 
+
+
     def __repr__(self):
-        class_vars = {k: v for k, v in vars(Constants).items() if not k.startswith("__")}
+        class_vars = {k: v for k, v in vars(SimulationSettings).items() if not k.startswith("__")}
         return str(class_vars)
+
+# Define the allowed operations
+OPERATIONS = {"XOR": lambda x, y: not (x or y), 
+              "NAND": lambda x, y: not (x and y),
+			  "EQ": lambda x, y: x == y, 
+			  "AND": lambda x, y: x and y,
+			  "OR": lambda x, y: x or y}
+
+# csv file path
+FILE_PATH = f"data/data_{datetime.datetime.now().strftime('%H_%M')}.csv"
+
+# How often for the simulation to save itself
+SAVE_FREQUENCY = 1000

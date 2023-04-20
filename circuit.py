@@ -1,7 +1,5 @@
-import random
 import itertools
-from collections import deque
-from helpers import OPERATIONS
+from constants import OPERATIONS
 from goal import Goal
 
 # A logic circuit
@@ -26,7 +24,7 @@ class Circuit:
 		self.output_gene = int(self.binary_genome[-4:], 2)
 	
 	
-	def get_gate_type(self, binary_string: str):
+	def get_gate_type(self, binary_string: str) -> str:
 		if binary_string == "00":
 			return "NAND"
 		else:

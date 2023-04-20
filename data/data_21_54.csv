@@ -1,0 +1,2 @@
+"settings: {'CHANGING_GOAL': False, 'N_pop': 5000, 'B': 104, 'Pc': 0.5, 'L': 100000, 'MAX_GATES': 12, 'G': 20, 'Pm': 0.00673076923076923}"
+Gen,Max Fitness,Average Fitness,Normalized Fitness,Max Fitness Genome

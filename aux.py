@@ -1,6 +1,14 @@
 import csv
 import networkx as nx
 import matplotlib.pyplot as plt
+import hashlib
+
+def consistent_hash(string):
+    num_buckets = 100
+    hash_object = hashlib.sha256(string.encode('utf-8'))
+    hash_hex = hash_object.hexdigest()
+    hash_int = int(hash_hex, 16)
+    return hash_int % num_buckets
 
 
 def add_to_csv(file_path, data):
@@ -11,8 +19,6 @@ def add_to_csv(file_path, data):
 
 def create_graph(gates, output):
     
-
-    return 
     TARGET = "O"
     GATE = "NAND"
 

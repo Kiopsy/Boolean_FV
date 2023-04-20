@@ -1,4 +1,4 @@
-from helpers import OPERATIONS
+from constants import OPERATIONS
 import itertools
 
 class Goal:
