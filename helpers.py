@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import hashlib
 
 def consistent_hash(string):
-    num_buckets = 100
+    num_buckets = 10000
     hash_object = hashlib.sha256(string.encode('utf-8'))
     hash_hex = hash_object.hexdigest()
     hash_int = int(hash_hex, 16)
