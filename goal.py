@@ -4,6 +4,7 @@ import itertools
 class Goal:
 
     def __init__(self, g:str, f:str, h:str):
+        self.g, self.f, self.h = g, f, h
         self.func = lambda x, y, w, z: OPERATIONS[f](OPERATIONS[g](x, y), OPERATIONS[h](w, z))
         self.str = f"(x {g} y) {f} (w {h} z)"
         self.truth_table = dict()

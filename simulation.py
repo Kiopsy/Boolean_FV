@@ -71,18 +71,18 @@ class Simulation:
             add_to_csv(FILE_PATH, [f"settings: {self.settings}"])
             add_to_csv(FILE_PATH, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
             population = self.checkpoint["population"]
+            current_goal = Goal(g = self.checkpoint["goal_str"]["g"], f = self.checkpoint["goal_str"]["f"], h = self.checkpoint["goal_str"]["h"])
             starting_gen = self.checkpoint["generation"]
-            current_goal = self.checkpoint["goal"]
 
 
-        for l in range(starting_gen, self.settings.L):
+        for gen in range(starting_gen, self.settings.L):
         
-            if starting_gen % SAVE_FREQUENCY == 0:
+            if gen % SAVE_FREQUENCY == 0:
                 checkpoint = dict()
-                checkpoint["generations"] = l 
-                checkpoint["settings"] = self.settings
                 checkpoint["population"] = population
-                checkpoint["goal"] = current_goal
+                checkpoint["goal_str"] = {"f": current_goal.f, "g": current_goal.g, "h": current_goal.h}
+                checkpoint["generation"] = gen
+                checkpoint["settings"] = self.settings
 
                 dir = f"./saves/{consistent_hash(str(self.settings))}"
 
@@ -92,7 +92,7 @@ class Simulation:
                     with open(f"{dir}/settings.txt", mode="w") as f:
                         f.write(str(self.settings))
                 
-                with open(f"{dir}/{l}.pkl", "wb") as f:
+                with open(f"{dir}/{gen}.pkl", "wb") as f:
                     pickle.dump(checkpoint, f)
 
             current_goal = self.get_goal(current_goal)
@@ -103,8 +103,8 @@ class Simulation:
             _norm = (_max - _avg) / (1 - _avg)
             _max_genome = population[fitness_list.index(_max)].binary_genome
 
-            print(f"Gen {l}: max = {_max}, avg = {_avg}, norm = {_norm}")
-            add_to_csv(FILE_PATH, [l, _max, _avg, _norm, _max_genome])
+            print(f"Gen {gen}: max = {_max}, avg = {_avg}, norm = {_norm}")
+            add_to_csv(FILE_PATH, [gen, _max, _avg, _norm, _max_genome])
 
             selection_weights = self.calculate_selection_weights(fitness_list)
             new_population = []
