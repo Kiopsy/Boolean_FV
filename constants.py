@@ -3,7 +3,7 @@ from helpers import consistent_hash
 
 class SimulationSettings:
     # If the goal is being changed or not
-    CHANGING_GOAL = True
+    CHANGING_GOAL = False
 
     # Define the population individuals 
     N_pop = 5000
@@ -30,7 +30,7 @@ class SimulationSettings:
     t = 30
 
     # goals
-    INIT_GOAL = ("EQ", "OR", "XOR")
+    INIT_GOAL = ("XOR", "OR", "XOR")
     GOALS = [("XOR", "AND", "XOR"), ("EQ", "OR", "XOR"), ("XOR", "OR", "EQ")]
 
     def __repr__(self):
