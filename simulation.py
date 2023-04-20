@@ -2,14 +2,18 @@ from circuit import Circuit
 import numpy as np
 from goal import Goal
 from helpers import add_to_csv, consistent_hash
-from constants import SimulationSettings, FILE_PATH, SAVE_FREQUENCY, SETTINGS_HASH
-import pickle, os, random
+from constants import SimulationSettings, SAVE_FREQUENCY
+import pickle, os, random, datetime
 
 class Simulation:
 
     def __init__(self, checkpoint = None):
         self.checkpoint = checkpoint
         self.SETTINGS: SimulationSettings = SimulationSettings() if checkpoint == None else checkpoint["settings"]
+        self.SETTINGS_HASH = consistent_hash(str(self.SETTINGS))
+        self.SAVES_DIR = f"./saves/{self.SETTINGS_HASH}"
+        self.CSV_FILE = f"{self.SAVES_DIR}/data_{datetime.datetime.now().strftime('%H_%M')}.csv"
+        
 
     # Change the goal every E = 20 generations
     def get_goal(self, goal):
@@ -17,7 +21,8 @@ class Simulation:
             goals = [Goal(g, f, h) for (g, f, h) in self.SETTINGS.GOALS]
             goals.remove(goal)
             goal = random.choice(goals)
-
+            print(f"Goal has changed to {goal}")
+    
         return goal
 
     # Initialize population of circuits
@@ -60,16 +65,22 @@ class Simulation:
     # Genetic algorithm
     def genetic_algorithm(self):
 
+        if not os.path.exists(self.SAVES_DIR):
+            os.makedirs(self.SAVES_DIR)
+
+            with open(f"{self.SAVES_DIR}/settings.txt", mode="w") as f:
+                f.write(str(self.SETTINGS))
+
         if self.checkpoint == None:
-            add_to_csv(FILE_PATH, [f"settings: {self.SETTINGS}"])
-            add_to_csv(FILE_PATH, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
+            add_to_csv(self.CSV_FILE, [f"settings: {self.SETTINGS}"])
+            add_to_csv(self.CSV_FILE, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
             population = self.init_population(self.SETTINGS.N_pop)
             current_goal = Goal(g = self.SETTINGS.INIT_GOAL[0], f = self.SETTINGS.INIT_GOAL[1], h = self.SETTINGS.INIT_GOAL[2])
             starting_gen = 0
         else:
-            add_to_csv(FILE_PATH, [f"Picking up from loadfile from dir {SETTINGS_HASH}..."])
-            add_to_csv(FILE_PATH, [f"settings: {self.SETTINGS}"])
-            add_to_csv(FILE_PATH, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
+            add_to_csv(self.CSV_FILE, [f"Picking up from loadfile from dir {self.SETTINGS_HASH}..."])
+            add_to_csv(self.CSV_FILE, [f"settings: {self.SETTINGS}"])
+            add_to_csv(self.CSV_FILE, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
             population = self.checkpoint["population"]
             current_goal = Goal(g = self.checkpoint["goal_str"]["g"], f = self.checkpoint["goal_str"]["f"], h = self.checkpoint["goal_str"]["h"])
             starting_gen = self.checkpoint["generation"]
@@ -84,17 +95,13 @@ class Simulation:
                 checkpoint["generation"] = gen
                 checkpoint["settings"] = self.SETTINGS
 
-                dir = f"./saves/{SETTINGS_HASH}"
-
-                with open(f"{dir}/settings.txt", mode="w") as f:
-                    f.write(str(self.SETTINGS))
                 
                 if gen < 1000:
-                    filename = f"{SETTINGS_HASH}_{gen}"
+                    filename = f"{self.SETTINGS_HASH}_{gen}"
                 else:
-                    filename = f"{SETTINGS_HASH}_{gen // 1000}k"
+                    filename = f"{self.SETTINGS_HASH}_{gen // 1000}k"
 
-                with open(f"{dir}/{filename}.pkl", "wb") as f:
+                with open(f"{self.SAVES_DIR}/{filename}.pkl", "wb") as f:
                     pickle.dump(checkpoint, f)
 
             current_goal = self.get_goal(current_goal)
@@ -105,8 +112,8 @@ class Simulation:
             _norm = (_max - _avg) / (1 - _avg)
             _max_genome = population[fitness_list.index(_max)].binary_genome
 
-            print(f"Gen {gen} of {SETTINGS_HASH}: max = {_max}, avg = {_avg}")
-            add_to_csv(FILE_PATH, [gen, _max, _avg, _norm, _max_genome])
+            print(f"Gen {gen} of {self.SETTINGS_HASH}: max = {_max}, avg = {_avg}")
+            add_to_csv(self.CSV_FILE, [gen, _max, _avg, _norm, _max_genome])
 
             selection_weights = self.calculate_selection_weights(fitness_list)
             new_population = []
@@ -115,4 +122,3 @@ class Simulation:
                 children = self.reproduce(parents)
                 new_population.extend(children)
             population = new_population
-

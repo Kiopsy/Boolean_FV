@@ -30,7 +30,7 @@ class SimulationSettings:
     t = 30
 
     # goals
-    INIT_GOAL = ("XOR", "OR", "EQ")
+    INIT_GOAL = ("EQ", "AND", "EQ")
     GOALS = [("XOR", "OR", "XOR"), ("EQ", "OR", "XOR"), ("XOR", "OR", "EQ")]
 
     def __repr__(self):
@@ -43,11 +43,6 @@ OPERATIONS = {"XOR": lambda x, y: not (x or y),
 			  "EQ": lambda x, y: x == y, 
 			  "AND": lambda x, y: x and y,
 			  "OR": lambda x, y: x or y}
-
-# csv file path
-SETTINGS_HASH = consistent_hash(str(SimulationSettings()))
-
-FILE_PATH = f"saves/{SETTINGS_HASH}/data_{datetime.datetime.now().strftime('%H_%M')}.csv"
 
 # How often for the simulation to save itself
 SAVE_FREQUENCY = 1000
