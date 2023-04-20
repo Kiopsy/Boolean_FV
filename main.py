@@ -1,8 +1,9 @@
 from simulation import Simulation
+from constants import SETTINGS_HASH
 import os, sys, pickle
 
 # Create load/save directories if non-existant
-for dir in ["saves", "loads"]:
+for dir in [f"saves/{SETTINGS_HASH}", "loads"]:
     if not os.path.exists(dir):
         os.makedirs(dir)
 

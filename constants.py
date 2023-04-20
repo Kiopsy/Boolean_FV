@@ -1,4 +1,5 @@
 import datetime
+from helpers import consistent_hash
 
 class SimulationSettings:
     # If the goal is being changed or not
@@ -28,6 +29,10 @@ class SimulationSettings:
 
     t = 30
 
+    # goals
+    INIT_GOAL = ("XOR", "OR", "XOR")
+    GOALS = [("XOR", "OR", "XOR"), ("EQ", "OR", "XOR"), ("XOR", "OR", "EQ")]
+
     def __repr__(self):
         class_vars = {k: v for k, v in vars(SimulationSettings).items() if not k.startswith("__")}
         return str(class_vars)
@@ -40,7 +45,9 @@ OPERATIONS = {"XOR": lambda x, y: not (x or y),
 			  "OR": lambda x, y: x or y}
 
 # csv file path
-FILE_PATH = f"data/data_{datetime.datetime.now().strftime('%H_%M')}.csv"
+SETTINGS_HASH = consistent_hash(str(SimulationSettings()))
+
+FILE_PATH = f"saves/{SETTINGS_HASH}/data_{datetime.datetime.now().strftime('%H_%M')}.csv"
 
 # How often for the simulation to save itself
 SAVE_FREQUENCY = 1000

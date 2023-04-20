@@ -2,27 +2,29 @@ from circuit import Circuit
 import numpy as np
 from goal import Goal
 from helpers import add_to_csv, consistent_hash
-from constants import SimulationSettings, FILE_PATH, SAVE_FREQUENCY
+from constants import SimulationSettings, FILE_PATH, SAVE_FREQUENCY, SETTINGS_HASH
 import pickle, os, random
 
 class Simulation:
 
     def __init__(self, checkpoint = None):
         self.checkpoint = checkpoint
-        self.settings: SimulationSettings = SimulationSettings() if checkpoint == None else checkpoint["settings"]
+        self.SETTINGS: SimulationSettings = SimulationSettings() if checkpoint == None else checkpoint["settings"]
 
     # Change the goal every E = 20 generations
     def get_goal(self, goal):
-        if self.settings.CHANGING_GOAL and random.random() < 1/self.settings.G:
-            goal = Goal(g = random.choice(["XOR", "EQ"]), f = random.choice(["AND", "OR"]), h = random.choice(["XOR", "EQ"]))
+        if self.SETTINGS.CHANGING_GOAL and random.random() < 1/self.SETTINGS.G:
+            goals = [Goal(g, f, h) for (g, f, h) in self.SETTINGS.GOALS]
+            goals.remove(goal)
+            goal = random.choice(goals)
 
         return goal
 
     # Initialize population of circuits
     def init_population(self, pop_size: int) -> list[Circuit]:
         population = []
-        for i in range(pop_size):
-            individual_binary = "".join([str(random.randint(0, 1)) for _ in range(self.settings.B)])
+        for _ in range(pop_size):
+            individual_binary = "".join([str(random.randint(0, 1)) for _ in range(self.SETTINGS.B)])
             population.append(Circuit(individual_binary))
         return population
 
@@ -30,7 +32,7 @@ class Simulation:
         return [individual.fitness(goal) for individual in population]
 
     def calculate_selection_weights(self, fitness_list: list[float]) -> list[float]:
-        exp_values = np.exp(np.array(fitness_list) * self.settings.t)
+        exp_values = np.exp(np.array(fitness_list) * self.SETTINGS.t)
         return list(exp_values / np.sum(exp_values))
 
     def select_parents(self, population: list[Circuit], selection_weights: list[float]) -> list[Circuit]:
@@ -41,13 +43,13 @@ class Simulation:
     def mutate(self, genome: str) -> str:
         int_genome = [int(c) for c in genome]
         for i in range(len(genome)):
-            if random.random() < self.settings.Pm:
+            if random.random() < self.SETTINGS.Pm:
                 int_genome[i] = 1 - int_genome[i]
         return "".join([str(i) for i in int_genome])
 
     # Crossover and mutate
     def reproduce(self, parents: list[Circuit]) -> list[Circuit]:
-        if random.random() < self.settings.Pc:
+        if random.random() < self.SETTINGS.Pc:
             crossover_point = random.randint(1, len(parents[0].binary_genome)-1)
             child1_genome = parents[0].binary_genome[:crossover_point] + parents[1].binary_genome[crossover_point:]
             child2_genome = parents[1].binary_genome[:crossover_point] + parents[0].binary_genome[crossover_point:]
@@ -59,37 +61,33 @@ class Simulation:
     def genetic_algorithm(self):
 
         if self.checkpoint == None:
-            add_to_csv(FILE_PATH, [f"settings: {self.settings}"])
+            add_to_csv(FILE_PATH, [f"settings: {self.SETTINGS}"])
             add_to_csv(FILE_PATH, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
-
-            population = self.init_population(self.settings.N_pop)
-            current_goal = Goal(g = "XOR", f = "OR", h = "XOR")
+            population = self.init_population(self.SETTINGS.N_pop)
+            current_goal = Goal(g = self.SETTINGS.INIT_GOAL[0], f = self.SETTINGS.INIT_GOAL[1], h = self.SETTINGS.INIT_GOAL[2])
             starting_gen = 0
         else:
-            add_to_csv(FILE_PATH, [f"Picking up from load file..."])
-            add_to_csv(FILE_PATH, [f"settings: {self.settings}"])
+            add_to_csv(FILE_PATH, [f"Picking up from loadfile from dir {SETTINGS_HASH}..."])
+            add_to_csv(FILE_PATH, [f"settings: {self.SETTINGS}"])
             add_to_csv(FILE_PATH, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
             population = self.checkpoint["population"]
             current_goal = Goal(g = self.checkpoint["goal_str"]["g"], f = self.checkpoint["goal_str"]["f"], h = self.checkpoint["goal_str"]["h"])
             starting_gen = self.checkpoint["generation"]
 
 
-        for gen in range(starting_gen, self.settings.L):
+        for gen in range(starting_gen, self.SETTINGS.L):
         
             if gen % SAVE_FREQUENCY == 0:
                 checkpoint = dict()
                 checkpoint["population"] = population
                 checkpoint["goal_str"] = {"f": current_goal.f, "g": current_goal.g, "h": current_goal.h}
                 checkpoint["generation"] = gen
-                checkpoint["settings"] = self.settings
+                checkpoint["settings"] = self.SETTINGS
 
-                dir = f"./saves/{consistent_hash(str(self.settings))}"
+                dir = f"./saves/{SETTINGS_HASH}"
 
-                if not os.path.exists(dir):
-                    os.makedirs(dir)
-
-                    with open(f"{dir}/settings.txt", mode="w") as f:
-                        f.write(str(self.settings))
+                with open(f"{dir}/settings.txt", mode="w") as f:
+                    f.write(str(self.SETTINGS))
                 
                 with open(f"{dir}/{gen}.pkl", "wb") as f:
                     pickle.dump(checkpoint, f)
@@ -107,7 +105,7 @@ class Simulation:
 
             selection_weights = self.calculate_selection_weights(fitness_list)
             new_population = []
-            for _ in range(self.settings.N_pop//2):
+            for _ in range(self.SETTINGS.N_pop//2):
                 parents = self.select_parents(population, selection_weights)
                 children = self.reproduce(parents)
                 new_population.extend(children)

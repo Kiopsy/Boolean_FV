@@ -27,7 +27,7 @@ def create_graph(gates, output):
 
     # Add nodes
     inputs = ["x", "y", "z", "w"]
-    nodes = inputs + [f"{GATE}_{i+len(inputs)}" for i in range(len(gates))] + [f"{GATE}_14", f"{GATE}_15"]
+    nodes = inputs + [f"{GATE}_{i+len(inputs)}" for i in range(len(gates))]
     nodes[output] = TARGET # output is target node
     G.add_nodes_from(nodes)
 
