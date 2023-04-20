@@ -24,8 +24,13 @@ def main():
         print_table(goal.truth_table)
         print("\n")
 
+    input("CIRCUIT GATE LIST: [enter]")
+    print({i: v for i, v in enumerate(["x", "y", "z", "w"] + c.gates)})
+    print("\n")
+
     input("CIRCUIT GRAPH: [enter]")
     create_graph(c.gates, c.output_gene)
+    print("\n")
 
 if __name__ == "__main__":
     # create_graph([], 0)

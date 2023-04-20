@@ -17,7 +17,8 @@ class Simulation:
             goals = [Goal(g, f, h) for (g, f, h) in self.SETTINGS.GOALS]
             goals.remove(goal)
             goal = random.choice(goals)
-
+            print(f"Goal has changed to {goal}")
+    
         return goal
 
     # Initialize population of circuits
@@ -89,7 +90,12 @@ class Simulation:
                 with open(f"{dir}/settings.txt", mode="w") as f:
                     f.write(str(self.SETTINGS))
                 
-                with open(f"{dir}/{gen}.pkl", "wb") as f:
+                if gen < 1000:
+                    filename = f"{SETTINGS_HASH}_{gen}"
+                else:
+                    filename = f"{SETTINGS_HASH}_{gen // 1000}k"
+
+                with open(f"{dir}/{filename}.pkl", "wb") as f:
                     pickle.dump(checkpoint, f)
 
             current_goal = self.get_goal(current_goal)
@@ -110,4 +116,3 @@ class Simulation:
                 children = self.reproduce(parents)
                 new_population.extend(children)
             population = new_population
-
