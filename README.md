@@ -50,7 +50,7 @@ GOAL [(x XOR y) OR (w XOR z)] TRUTH TABLE: [enter]
 ```
 
 ## Example
-A perfectly learned logic circuit to the goal function g(x,y,z,w) (x XOR y) OR (z XOR w).
+A perfectly learned logic circuit to the goal function g(x,y,z,w) = (x XOR y) OR (z XOR w).
 
 Respective binary genome: 0011011111110110101100111010010001100110010111100000010000101000011100110001111000011110100011110000000011010000000100010111
 
