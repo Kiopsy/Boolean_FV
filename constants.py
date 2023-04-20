@@ -30,7 +30,7 @@ class SimulationSettings:
     t = 30
 
     # goals
-    INIT_GOAL = ("XOR", "OR", "XOR")
+    INIT_GOAL = ("XOR", "AND", "XOR")
     GOALS = [("XOR", "OR", "XOR"), ("EQ", "OR", "XOR"), ("XOR", "OR", "EQ")]
 
     def __repr__(self):

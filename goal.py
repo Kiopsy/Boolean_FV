@@ -19,3 +19,8 @@ class Goal:
 
     def __getitem__(self, key):
         return self.truth_table.get(key, None)
+
+    def __eq__(self, other):
+        if isinstance(other, Goal):
+            return self.str == other.str
+        return False
