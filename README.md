@@ -5,7 +5,8 @@ A recreation of the paper by Parter et al., [Facilitated Variation: How Evolutio
 The goal of this project is to convert a binary genome into a logic circuit composed of up to 12 NAND gates, and use a standard genetic algorithm to modify the genome and learn to satisfy a goal boolean function.
 
 To achieve this goal, we convert a binary genome into a NAND logic circuit using the following methodology:
-<img src='binary_encoding.PNG' width='1250' />
+
+<img src='binary_encoding.png' width='800'/>
 
 ## Instructions
 ### Learning Simulation
@@ -53,4 +54,4 @@ A perfectly learned logic circuit to the goal function g(x,y,z,w) (x XOR y) OR (
 
 Respective binary genome: 0011011111110110101100111010010001100110010111100000010000101000011100110001111000011110100011110000000011010000000100010111
 
-<img src='perfect_fit_XOR_OR_XOR_circuit.PNG' width='1250' />
+<img src='perfect_fit_XOR_OR_XOR_circuit.PNG' width='1000' />
