@@ -1,7 +1,7 @@
 from circuit import Circuit
 import numpy as np
 from goal import Goal
-from aux import add_to_csv, consistent_hash
+from helpers import add_to_csv, consistent_hash
 from constants import SimulationSettings, FILE_PATH, SAVE_FREQUENCY
 import pickle, os, random
 

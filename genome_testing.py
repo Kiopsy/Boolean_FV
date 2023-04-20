@@ -1,6 +1,6 @@
 from circuit import Circuit
 from goal import Goal
-from aux import create_graph
+from helpers import create_graph
 
 def print_table(table):
     for i, (k, v) in enumerate(table.items()):
