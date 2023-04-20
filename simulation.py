@@ -30,8 +30,7 @@ class Simulation:
         return [individual.fitness(goal) for individual in population]
 
     def calculate_selection_weights(self, fitness_list: list[float]) -> list[float]:
-        t = 30
-        exp_values = np.exp(np.array(fitness_list) * t)
+        exp_values = np.exp(np.array(fitness_list) * self.settings.t)
         return list(exp_values / np.sum(exp_values))
 
     def select_parents(self, population: list[Circuit], selection_weights: list[float]) -> list[Circuit]:

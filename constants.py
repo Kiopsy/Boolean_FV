@@ -8,7 +8,7 @@ class SimulationSettings:
     N_pop = 5000
 
     # Define the length of the binary genome in bits 
-    B = 104
+    B = 124
 
     # Define the probability of genome crossover
     Pc = 0.5
@@ -26,7 +26,7 @@ class SimulationSettings:
     # Define the probability of a gene mutation
     Pm = 0.7 / B
 
-
+    t = 30
 
     def __repr__(self):
         class_vars = {k: v for k, v in vars(SimulationSettings).items() if not k.startswith("__")}

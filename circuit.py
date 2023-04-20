@@ -54,7 +54,7 @@ class Circuit:
 			self.sprint("Look for gate:", gate_index)
 
 			# try to unpack the gate list seen at this index if theres is a gate list
-			try:
+			try:			
 				x, *inputs_addresses = addr_to_output[gate_index]
 				gate = val = x
 			except KeyError as e:
