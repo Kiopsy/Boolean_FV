@@ -18,8 +18,7 @@ def main():
     print("\n")
 
     if GOAL:
-        g, f, h = GOAL.split("/")
-        goal = Goal(g, f, h)
+        goal = Goal(GOAL.split("/"))
         input(f"GOAL [{goal}] TRUTH TABLE: [enter]")
         print_table(goal.truth_table)
         print("\n")
@@ -35,8 +34,6 @@ def main():
         repeat = input("New graph? ").strip().lower()
         if "n" in repeat or "q" in repeat:
             break
-
-
 
 if __name__ == "__main__":
     # create_graph([], 0)

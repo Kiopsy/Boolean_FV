@@ -10,12 +10,10 @@ def consistent_hash(string):
     hash_int = int(hash_hex, 16)
     return hash_int % num_buckets
 
-
 def add_to_csv(file_path, data):
     with open(file_path, 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(data)
-
 
 def create_graph(gates, output):
     
@@ -26,7 +24,7 @@ def create_graph(gates, output):
     G = nx.DiGraph()
 
     # Add nodes
-    inputs = ["x", "y", "z", "w"]
+    inputs = ["x", "y", "z", "w"] # TODO
     nodes = inputs + [f"{GATE}_{i+len(inputs)}" for i in range(len(gates))]
     nodes[output] = TARGET # output is target node
     G.add_nodes_from(nodes)

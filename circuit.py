@@ -1,5 +1,5 @@
 import itertools
-from constants import OPERATIONS
+from constants import OPERATIONS, GATE_TYPE_SZ, GATE_ADDR_SZ, NUM_INPUTS
 from goal import Goal
 
 # A logic circuit
@@ -16,13 +16,21 @@ class Circuit:
 			print(args, kwargs)
 		
 	def parse_genome(self):
-		for i in range(0, len(self.binary_genome)-4, 10):
-			gate_type = self.get_gate_type(self.binary_genome[i:i+2])
-			input1_addr = int(self.binary_genome[i+2:i+6], 2)
-			input2_addr = int(self.binary_genome[i+6:i+10], 2)
+		gate_genome_sz = GATE_TYPE_SZ + (2 * GATE_ADDR_SZ)
+
+		for i in range(0, len(self.binary_genome)-GATE_ADDR_SZ, gate_genome_sz):
+			gate_type = self.get_gate_type(self.binary_genome[i:i+GATE_TYPE_SZ])
+			input1_start = i + GATE_TYPE_SZ
+			input1_end = input1_start + GATE_ADDR_SZ
+			input1_addr = int(self.binary_genome[input1_start:input1_end], 2)
+
+			input2_start = input1_end
+			input2_end = input2_start + GATE_ADDR_SZ
+			input2_addr = int(self.binary_genome[input2_start:input2_end], 2)
+
 			self.gates.append([gate_type, input1_addr, input2_addr])
-		self.output_gene = int(self.binary_genome[-4:], 2)
-	
+
+		self.output_gene = int(self.binary_genome[-GATE_ADDR_SZ:], 2)
 	
 	def get_gate_type(self, binary_string: str) -> str:
 		if binary_string == "00":
@@ -30,7 +38,7 @@ class Circuit:
 		else:
 			return None
 			
-	def run_circuit(self, inputs: tuple[bool, bool, bool, bool]) -> int:
+	def run_circuit(self, inputs) -> int:
 		addr_to_output = dict()
 		for i, val in enumerate(inputs):
 			addr_to_output[i] = [val]
@@ -102,8 +110,7 @@ class Circuit:
     # Fitness defined in https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1000206&type=self.sprintable
 	def fitness(self, goal: Goal) -> float:
 		# TODO: Set an extra penalty for non-effective (no direct path to output) gates
-
-		inputs = list(itertools.product([0, 1], repeat=4))
+		inputs = list(itertools.product([0, 1], repeat=NUM_INPUTS)) #TODO
 		eval_score = 0
 
 		for input_set in inputs:
@@ -112,8 +119,8 @@ class Circuit:
 
 		return eval_score / len(inputs)
 	
-	def get_truth_table(self) -> dict[tuple[int, int, int, int], int]:
-		inputs = list(itertools.product([1, 0], repeat=4))
+	def get_truth_table(self): # dict[tuple[NUM_INPUTS], int]:
+		inputs = list(itertools.product([1, 0], repeat=NUM_INPUTS)) # TODO
 		table = dict()
 		
 		for input_set in inputs:
