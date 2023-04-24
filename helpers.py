@@ -20,6 +20,24 @@ def create_graph(gates, output, n = 4):
     TARGET = "*"
     GATE = "NAND"
 
+    def style_nodes(nodes):
+        node_color = []
+        node_shape = []
+
+
+        for n in nodes:
+            if GATE in n:
+               node_color.append("#bfbfbf")
+               node_shape.append("v")
+            elif TARGET in n:
+               node_color.append("r")
+               node_shape.append("d")
+            else:
+                node_color.append("orange")
+                node_shape.append("o")
+        
+        return node_color, node_shape
+
     # Create a graph
     G = nx.DiGraph()
 
@@ -43,7 +61,22 @@ def create_graph(gates, output, n = 4):
                 G.remove_node(f"{GATE}_{i+len(inputs)}")
             except Exception as e:
                 print(e)
+    nodes = list(G.nodes())
+    
 
-    # Plot the graph
-    nx.draw(G, with_labels=True)
+    # Draw the graph with the style options
+    pos = nx.spring_layout(G)
+
+    for node in inputs:
+        pos[node] = (pos[node][0], 1)
+    
+    pos[TARGET] = (pos[TARGET][0], -1)
+
+    
+    node_color, node_shape = style_nodes(nodes)
+
+    nx.draw_networkx_nodes(G, pos, node_color=node_color)#, node_shape=node_shape)
+    nx.draw_networkx_edges(G, pos)#, edge_color=edge_color)
+    nx.draw_networkx_labels(G, pos)
+    plt.axis('off')
     plt.show()

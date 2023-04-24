@@ -9,9 +9,9 @@ GOALS = {
     "G3" : "(w XOR x) OR (y EQ z)",
     "G4" : "(w XOR x) AND (y XOR z)",
     # 6-input goals
-    "G5" : "(u XOR v) OR (x XOR y) OR (y XOR z)",
-    "G6" : "(u EQ v) OR (x XOR y) OR (y XOR z)",
-    "G7" : "(u XOR v) OR (x XOR y) OR (y EQ z)"
+    "G5" : "(u XOR v) OR (w XOR x) OR (y XOR z)",
+    "G6" : "(u EQ v) OR (w XOR x) OR (y XOR z)",
+    "G7" : "(u XOR v) OR (w XOR x) OR (y EQ z)"
 }
 
 # Define the allowed operations
