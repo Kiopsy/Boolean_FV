@@ -9,21 +9,11 @@ def print_table(table, table2 = None):
 def main():
     
     GENOME = input("Genome: ").strip()
-    GOAL = input("Goal Operator List (optional): ").strip().upper()
+    GOAL_STR = input("Goal (optional): ").strip().upper()
 
     c = Circuit(GENOME)
 
-    # (x XOR y) AND z
-
-    goal_truth_table = None
-    if GOAL:
-        ops_list = GOAL.replace(" ", "")
-        ops_list = GOAL.replace(",", "/")
-        ops_list = GOAL.split("/")
-
-        print(ops_list)
-        goal = Goal(ops_list)
-        goal_truth_table = goal.truth_table
+    goal_truth_table = Goal(GOAL_STR).truth_table if GOAL_STR else None
 
     print()
     input("CIRCUIT TRUTH TABLE: [enter]")

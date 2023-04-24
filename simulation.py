@@ -17,7 +17,7 @@ class Simulation:
     # Change the goal every E = 20 generations
     def get_goal(self, goal):
         if self.SETTINGS.CHANGING_GOAL and random.random() < 1/self.SETTINGS.G:
-            goals = [Goal(goal_str_lst) for goal_str_lst in self.SETTINGS.GOALS]
+            goals = [Goal(goal_str) for goal_str in self.SETTINGS.GOALS]
             goals.remove(goal)
             goal = random.choice(goals)
             print(f"Goal has changed to {goal}")
@@ -81,7 +81,7 @@ class Simulation:
             add_to_csv(self.CSV_FILE, [f"settings: {self.SETTINGS}"])
             add_to_csv(self.CSV_FILE, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
             population = self.checkpoint["population"]
-            current_goal = Goal(self.checkpoint["goal_str_lst"])
+            current_goal = Goal(self.checkpoint["goal_str"])
             starting_gen = self.checkpoint["generation"]
 
         for gen in range(starting_gen, self.SETTINGS.L):
@@ -89,7 +89,7 @@ class Simulation:
             if gen % SAVE_FREQUENCY == 0:
                 checkpoint = dict()
                 checkpoint["population"] = population
-                checkpoint["goal_str_lst"] = current_goal.goal_str_lst
+                checkpoint["goal_str"] = current_goal.goal_str
                 checkpoint["generation"] = gen
                 checkpoint["settings"] = self.SETTINGS
                 
