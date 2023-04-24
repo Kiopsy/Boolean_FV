@@ -24,7 +24,6 @@ def create_graph(gates, output, n = 4):
         node_color = []
         node_shape = []
 
-
         for n in nodes:
             if GATE in n:
                node_color.append("#bfbfbf")
@@ -49,7 +48,7 @@ def create_graph(gates, output, n = 4):
 
     # Add edges
     edge_list = []
-    for i, (gate, input1_address, input2_address) in enumerate(gates):
+    for i, (_, input1_address, input2_address) in enumerate(gates):
         edge_list.append((nodes[input1_address], nodes[i+len(inputs)]))
         edge_list.append((nodes[input2_address], nodes[i+len(inputs)]))
     G.add_edges_from(edge_list)
@@ -65,10 +64,11 @@ def create_graph(gates, output, n = 4):
     
 
     # Draw the graph with the style options
-    pos = nx.spring_layout(G)
-    for node in inputs:
-        pos[node] = (pos[node][0], 1)
-    pos[TARGET] = (pos[TARGET][0], -1)
+    for _ in range(2):
+        pos = nx.spring_layout(G)
+        for node in inputs:
+            pos[node] = (pos[node][0], 1)
+        pos[TARGET] = (pos[TARGET][0], -1)
 
     
     node_color, node_shape = style_nodes(nodes)
