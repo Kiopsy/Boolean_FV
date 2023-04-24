@@ -8,7 +8,7 @@ class Goal:
 
         # properly format goal_str with lowercase variables and uppercase op names
         goal_str = goal_str.lower()
-        replacements = [("and", "AND"), ("xor", "XOR"), ("eq", "EQ"), ("or", "OR"), ("AND", "&"), ("XOR", "^"), ("EQ", "=="), ("OR", "|")]
+        replacements = [("and", "&"), ("xor", "^"), ("eq", "=="), ("or", "|")]
         for a, b in replacements:
             goal_str = goal_str.replace(a, b)
 
@@ -20,7 +20,7 @@ class Goal:
         variables.sort(key = lambda x: goal_str.find(x))
 
         self.NUM_INPUTS = len(variables)
-        
+
         # evaluate truth table
         inputs = list(itertools.product([1, 0], repeat=self.NUM_INPUTS))
         for input_set in inputs:
