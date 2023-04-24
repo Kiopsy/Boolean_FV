@@ -7,8 +7,8 @@ import pickle, os, random, datetime
 
 class Simulation:
 
-    def __init__(self, checkpoint = None):
-        self.checkpoint = checkpoint
+    def __init__(self, checkpoint = None) -> None:
+        self.CHECKPOINT = checkpoint
         self.SETTINGS: SimulationSettings = SimulationSettings() if checkpoint == None else checkpoint["settings"]
         self.SETTINGS_HASH = consistent_hash(str(self.SETTINGS))
         self.SAVES_DIR = f"./saves/{self.SETTINGS_HASH}"
@@ -41,7 +41,7 @@ class Simulation:
 
     def select_parents(self, population: list[Circuit], selection_weights: list[float]) -> list[str]:
         parents = random.choices(population, weights=selection_weights, k=2)
-        return [p.binary_genome for p in parents]
+        return [p.BINARY_GENOME for p in parents]
 
     # Mutation
     def mutate(self, genome: str) -> str:
@@ -70,7 +70,7 @@ class Simulation:
             with open(f"{self.SAVES_DIR}/settings.txt", mode="w") as f:
                 f.write(str(self.SETTINGS))
 
-        if self.checkpoint == None:
+        if self.CHECKPOINT == None:
             add_to_csv(self.CSV_FILE, [f"settings: {self.SETTINGS}"])
             add_to_csv(self.CSV_FILE, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
             population = self.init_population(self.SETTINGS.N_pop)
@@ -80,23 +80,23 @@ class Simulation:
             add_to_csv(self.CSV_FILE, [f"Picking up from loadfile from dir {self.SETTINGS_HASH}..."])
             add_to_csv(self.CSV_FILE, [f"settings: {self.SETTINGS}"])
             add_to_csv(self.CSV_FILE, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
-            population = self.checkpoint["population"]
-            current_goal = Goal(self.checkpoint["goal_str"])
-            starting_gen = self.checkpoint["generation"]
+            population = self.CHECKPOINT["population"]
+            current_goal = Goal(self.CHECKPOINT["goal_str"])
+            starting_gen = self.CHECKPOINT["generation"]
 
         for gen in range(starting_gen, self.SETTINGS.L):
         
             if gen % SAVE_FREQUENCY == 0:
                 checkpoint = dict()
                 checkpoint["population"] = population
-                checkpoint["goal_str"] = current_goal.goal_str
+                checkpoint["goal_str"] = current_goal.GOAL_STR
                 checkpoint["generation"] = gen
                 checkpoint["settings"] = self.SETTINGS
                 
                 if gen < 1000:
                     filename = f"{self.SETTINGS_HASH}_{gen}"
                 else:
-                    filename = f"{self.SETTINGS_HASH}_{gen // 1000}k"
+                    filename = f"{self.SETTINGS_HASH}_{gen // SAVE_FREQUENCY}k"
 
                 with open(f"{self.SAVES_DIR}/{filename}.pkl", "wb") as f:
                     pickle.dump(checkpoint, f)
@@ -107,7 +107,7 @@ class Simulation:
             _max = max(fitness_list)
             _avg = sum(fitness_list)/len(fitness_list)
             _norm = (_max - _avg) / (1 - _avg)
-            _max_genome = population[fitness_list.index(_max)].binary_genome
+            _max_genome = population[fitness_list.index(_max)].BINARY_GENOME
 
             print(f"Gen {gen} of {self.SETTINGS_HASH}: max = {_max}, avg = {_avg}")
             add_to_csv(self.CSV_FILE, [gen, _max, _avg, _norm, _max_genome])

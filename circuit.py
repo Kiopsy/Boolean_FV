@@ -8,7 +8,7 @@ from goal import Goal
 # A logic circuit
 class Circuit:
 	def __init__(self, binary_genome:str, silent=True) -> None:
-		self.binary_genome: str = binary_genome
+		self.BINARY_GENOME: str = binary_genome
 		self.gates = [] 
 		self.SILENT = silent
 		self.output_gene: int = None
@@ -18,22 +18,22 @@ class Circuit:
 		if not self.SILENT:
 			print(args, kwargs)
 		
-	def parse_genome(self):
+	def parse_genome(self) -> None:
 		gate_genome_sz = GATE_TYPE_SZ + (2 * GATE_ADDR_SZ)
 
-		for i in range(0, len(self.binary_genome)-GATE_ADDR_SZ, gate_genome_sz):
-			gate_type = self.get_gate_type(self.binary_genome[i:i+GATE_TYPE_SZ])
+		for i in range(0, len(self.BINARY_GENOME)-GATE_ADDR_SZ, gate_genome_sz):
+			gate_type = self.get_gate_type(self.BINARY_GENOME[i:i+GATE_TYPE_SZ])
 			input1_start = i + GATE_TYPE_SZ
 			input1_end = input1_start + GATE_ADDR_SZ
-			input1_addr = int(self.binary_genome[input1_start:input1_end], 2)
+			input1_addr = int(self.BINARY_GENOME[input1_start:input1_end], 2)
 
 			input2_start = input1_end
 			input2_end = input2_start + GATE_ADDR_SZ
-			input2_addr = int(self.binary_genome[input2_start:input2_end], 2)
+			input2_addr = int(self.BINARY_GENOME[input2_start:input2_end], 2)
 
 			self.gates.append([gate_type, input1_addr, input2_addr])
 
-		self.output_gene = int(self.binary_genome[-GATE_ADDR_SZ:], 2)
+		self.output_gene = int(self.BINARY_GENOME[-GATE_ADDR_SZ:], 2)
 	
 	def get_gate_type(self, binary_string: str) -> str:
 		if binary_string == "00":
@@ -54,7 +54,7 @@ class Circuit:
 
 		visited = set()
 
-		def dfs(gate_index):
+		def dfs(gate_index) -> int:
 
 			# if we have been to this index, return -1, meaning that this circuit potentially does not work
 			if gate_index in visited:
@@ -122,8 +122,8 @@ class Circuit:
 
 		return eval_score / len(inputs)
 	
-	def get_truth_table(self): # dict[tuple[NUM_INPUTS], int]:
-		inputs = list(itertools.product([1, 0], repeat=NUM_INPUTS)) # TODO
+	def get_truth_table(self) -> dict[tuple[NUM_INPUTS], int]:
+		inputs = list(itertools.product([1, 0], repeat=NUM_INPUTS))
 		table = dict()
 		
 		for input_set in inputs:
