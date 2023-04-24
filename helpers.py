@@ -65,14 +65,17 @@ def create_graph(gates, output, n = 4):
     
 
     # Draw the graph with the style options
-    pos = nx.spring_layout(G)
+    pos = dict()
+    for i in range(len(inputs)):
+        pos[inputs[i]] = (i, 4)
+    for i in range(len(inputs), G.number_of_nodes()):
 
-    for node in inputs:
-        pos[node] = (pos[node][0], 1)
-    
-    pos[TARGET] = (pos[TARGET][0], -1)
+        if nodes[i] == TARGET:
+            pos[nodes[i]] = (len(inputs)//2, 0)
+        else:
+            pos[nodes[i]] = (i - len(inputs), 2)
 
-    
+    # pos = nx.spring_layout(G, pos=pos)
     node_color, node_shape = style_nodes(nodes)
 
     nx.draw_networkx_nodes(G, pos, node_color=node_color)#, node_shape=node_shape)
