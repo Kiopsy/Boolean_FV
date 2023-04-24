@@ -15,7 +15,7 @@ def add_to_csv(file_path, data):
         writer = csv.writer(file)
         writer.writerow(data)
 
-def create_graph(gates, output):
+def create_graph(gates, output, n = 4):
     
     TARGET = "O"
     GATE = "NAND"
@@ -24,7 +24,7 @@ def create_graph(gates, output):
     G = nx.DiGraph()
 
     # Add nodes
-    inputs = ["x", "y", "z", "w"] # TODO
+    inputs = [chr(i) for i in range(ord('z') - n + 1, ord('z') + 1)] # TODO
     nodes = inputs + [f"{GATE}_{i+len(inputs)}" for i in range(len(gates))]
     nodes[output] = TARGET # output is target node
     G.add_nodes_from(nodes)

@@ -35,7 +35,7 @@ GATE_TYPE_SZ = 2
 
 class SimulationSettings:
     # If the goal is being changed or not
-    CHANGING_GOAL = False
+    CHANGING_GOAL = True
 
     # Define the maximum number of gates in the circuit
     # From the paper, circuits were composed of NAND gands
@@ -66,7 +66,7 @@ class SimulationSettings:
 
     # goals
     INIT_GOAL = GOALS["G5"]
-    GOALS = [GOALS["G1"], GOALS["G2"], GOALS["G3"]]
+    GOALS = [GOALS["G5"], GOALS["G6"], GOALS["G7"]]
 
     def __repr__(self):
         class_vars = {k: v for k, v in vars(SimulationSettings).items() if not k.startswith("__")}
