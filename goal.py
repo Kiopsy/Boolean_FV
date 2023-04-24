@@ -15,15 +15,13 @@ class Goal:
         # set formatted string to the constsant
         self.GOAL_STR = goal_str
 
-        # evaluate truth table
+        
         variables = list(set([char for char in goal_str if char.islower()]))
-        variables.sort()
+        variables.sort(key = lambda x: goal_str.find(x))
 
         self.NUM_INPUTS = len(variables)
-
-        print("variables", variables)
-        print("goal_str", goal_str)
-
+        
+        # evaluate truth table
         inputs = list(itertools.product([1, 0], repeat=self.NUM_INPUTS))
         for input_set in inputs:
             eval_str = goal_str
