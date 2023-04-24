@@ -4,10 +4,10 @@ from helpers import consistent_hash
 # Define possible boolean goal functions to run the simulation on
 GOALS = {
     # 4-input goals
-    "G1" : "(x XOR y) OR (z XOR w)",
-    "G2" : "(x EQ y) OR (z XOR w)",
-    "G3" : "(x XOR y) OR (z EQ w)",
-    "G4" : "(x XOR y) AND (z XOR w)",
+    "G1" : "(w XOR x) OR (y XOR z)",
+    "G2" : "(w EQ x) OR (y XOR z)",
+    "G3" : "(w XOR x) OR (y EQ z)",
+    "G4" : "(w XOR x) AND (y XOR z)",
     # 6-input goals
     "G5" : "(u XOR v) OR (x XOR y) OR (y XOR z)",
     "G6" : "(u EQ v) OR (x XOR y) OR (y XOR z)",
@@ -74,4 +74,4 @@ class SimulationSettings:
     
 
 # TODO: how should we enforce that the num gates, gate_addr_sz, and bit length lines up?
-# B = (2 + 2 * address_length) * (address_length**2 - inputs) + address_length
+# B = (2 + 2 * address_length) * (max_gates: inputs < x <= address_length**2 - inputs) + address_length

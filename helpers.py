@@ -17,7 +17,7 @@ def add_to_csv(file_path, data):
 
 def create_graph(gates, output, n = 4):
     
-    TARGET = "O"
+    TARGET = "*"
     GATE = "NAND"
 
     # Create a graph

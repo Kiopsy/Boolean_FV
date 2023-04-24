@@ -9,7 +9,7 @@ def print_table(table, table2 = None):
 def main():
     
     GENOME = input("Genome: ").strip()
-    GOAL_STR = input("Goal (optional): ").strip().upper()
+    GOAL_STR = input("Goal (optional): ").strip()
 
     c = Circuit(GENOME)
 
@@ -34,7 +34,6 @@ def main():
             break
 
 if __name__ == "__main__":
-    # create_graph([], 0)
     main()
 
 """
