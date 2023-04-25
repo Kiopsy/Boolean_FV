@@ -7,11 +7,13 @@ GOALS = {
     "G1" : "(w XOR x) OR (y XOR z)",
     "G2" : "(w EQ x) OR (y XOR z)",
     "G3" : "(w XOR x) OR (y EQ z)",
+    # 
     "G4" : "(w XOR x) AND (y XOR z)",
     # 6-input goals
     "G5" : "(u XOR v) OR (w XOR x) OR (y XOR z)",
     "G6" : "(u EQ v) OR (w XOR x) OR (y XOR z)",
-    "G7" : "(u XOR v) OR (w XOR x) OR (y EQ z)"
+    "G7" : "(u XOR v) OR (w XOR x) OR (y EQ z)",
+
 }
 
 # Define the allowed operations
@@ -46,7 +48,6 @@ class SimulationSettings:
 
     # Define the length of the binary genome in bits 
     B = (GATE_TYPE_SZ + 2 * GATE_ADDR_SZ) * MAX_GATES + GATE_ADDR_SZ
-    print("B", B)
 
     # Define the probability of genome crossover
     Pc = 0.5
@@ -55,7 +56,7 @@ class SimulationSettings:
     L = 10**5
 
     # expected number of generations until the goal is changed
-    G = 20
+    G = 5
 
     # Define the probability of a gene mutation
     Pm = 0.7 / B
@@ -66,7 +67,7 @@ class SimulationSettings:
     NUM_INPUTS = NUM_INPUTS # TODO: fix this
 
     # goals
-    INIT_GOAL = GOALS["G1"]
+    INIT_GOAL = GOALS["G2"]
     GOALS = [GOALS["G1"], GOALS["G2"], GOALS["G3"]]
 
     def __repr__(self):

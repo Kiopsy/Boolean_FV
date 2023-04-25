@@ -55,7 +55,7 @@ class Circuit:
 
 			# if we have been to this index, return -1, meaning that this circuit potentially does not work
 			if gate_index in visited:
-				return -1
+				raise Exception(f"Self loop")
 
 			visited.add(gate_index)
 
@@ -77,19 +77,10 @@ class Circuit:
 			input1_val = dfs(inputs_addresses[0])
 			input2_val = dfs(inputs_addresses[1])
 
-			# if any of the inputs are 0, we know that the output of the gate will be 1
-			if (input1_val * input2_val) == 0:
-				val  = 1
-			# if any of the inputs are -1 and not 0, we know there is a self loop
-			elif (input1_val * input2_val) < 0:
-				raise Exception(f"Self or feedback loop")
-			# else, we have two actual outcomes and we should compute it
-			# NOTE: not every gate should be a nand, some should be nothing right?
+			if gate:
+				val = OPERATIONS[gate](input1_val, input2_val)
 			else:
-				if gate:
-					val = OPERATIONS[gate](input1_val, input2_val)
-				else:
-					raise Exception(f"No gate here")
+				raise Exception(f"No gate here")
 
 			# memoization => set the gate to be its output value so no future computations are needed
 			addr_to_output[gate_index] = [val]

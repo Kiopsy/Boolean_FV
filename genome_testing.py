@@ -33,12 +33,7 @@ def main():
     print("\n")
     
     input("CIRCUIT GRAPH: [enter]")
-    try:
-        while True:
-            create_graph(c.gates, c.output_gene, N)
-    except KeyboardInterrupt:
-        print("Exiting...")
-        exit(0)
-
+    create_graph(c.gates, c.output_gene, N)
+    
 if __name__ == "__main__":
     main()
