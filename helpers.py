@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import hashlib
 
 def consistent_hash(string):
-    num_buckets = 10000
+    num_buckets = 10**6
     hash_object = hashlib.sha256(string.encode('utf-8'))
     hash_hex = hash_object.hexdigest()
     hash_int = int(hash_hex, 16)
@@ -18,7 +18,7 @@ def add_to_csv(file_path, data):
 def create_graph(gates, output, N = 4):
     
     TARGET = "*"
-    GATE = "NAND"
+    GATE = "n"
 
     def style_nodes(nodes):
         node_color = []

@@ -15,7 +15,7 @@ GOALS = {
 }
 
 # Define the allowed operations
-OPERATIONS = {"XOR": lambda x, y: not (x or y), 
+OPERATIONS = {"XOR": lambda x, y: (x ^ y), 
               "NAND": lambda x, y: not (x and y),
 			  "EQ": lambda x, y: x == y, 
 			  "AND": lambda x, y: x and y,
@@ -25,10 +25,10 @@ OPERATIONS = {"XOR": lambda x, y: not (x or y),
 SAVE_FREQUENCY = 1000
 
 # The number of inputs a circuit will take
-NUM_INPUTS = 6
+NUM_INPUTS = 4
 
 # The length of a gate address in binary
-GATE_ADDR_SZ = 5
+GATE_ADDR_SZ = 4
 
 # The length of a gate type in binary
 GATE_TYPE_SZ = 2
@@ -39,13 +39,14 @@ class SimulationSettings:
 
     # Define the maximum number of gates in the circuit
     # From the paper, circuits were composed of NAND gands
-    MAX_GATES = 26
+    MAX_GATES = 12
 
     # Define the population individuals 
     N_pop = 5000
 
     # Define the length of the binary genome in bits 
     B = (GATE_TYPE_SZ + 2 * GATE_ADDR_SZ) * MAX_GATES + GATE_ADDR_SZ
+    print("B", B)
 
     # Define the probability of genome crossover
     Pc = 0.5
@@ -65,13 +66,10 @@ class SimulationSettings:
     NUM_INPUTS = NUM_INPUTS # TODO: fix this
 
     # goals
-    INIT_GOAL = GOALS["G5"]
-    GOALS = [GOALS["G5"], GOALS["G6"], GOALS["G7"]]
+    INIT_GOAL = GOALS["G1"]
+    GOALS = [GOALS["G1"], GOALS["G2"], GOALS["G3"]]
 
     def __repr__(self):
         class_vars = {k: v for k, v in vars(SimulationSettings).items() if not k.startswith("__")}
         return str(class_vars)
     
-
-# TODO: how should we enforce that the num gates, gate_addr_sz, and bit length lines up?
-# B = (2 + 2 * address_length) * (max_gates: inputs < x <= address_length**2 - inputs) + address_length

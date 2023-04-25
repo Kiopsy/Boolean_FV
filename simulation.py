@@ -13,6 +13,7 @@ class Simulation:
         self.SETTINGS_HASH = consistent_hash(str(self.SETTINGS))
         self.SAVES_DIR = f"./saves/{self.SETTINGS_HASH}"
         self.CSV_FILE = f"{self.SAVES_DIR}/data_{datetime.datetime.now().strftime('%H_%M')}.csv"
+        self.CSV_HEADER = ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome", "Goal"]
         
     # Change the goal every E = 20 generations
     def get_goal(self, goal):
@@ -72,14 +73,14 @@ class Simulation:
 
         if self.CHECKPOINT == None:
             add_to_csv(self.CSV_FILE, [f"settings: {self.SETTINGS}"])
-            add_to_csv(self.CSV_FILE, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
+            add_to_csv(self.CSV_FILE, self.CSV_HEADER)
             population = self.init_population(self.SETTINGS.N_pop)
             current_goal = Goal(self.SETTINGS.INIT_GOAL)
             starting_gen = 0
         else:
             add_to_csv(self.CSV_FILE, [f"Picking up from loadfile from dir {self.SETTINGS_HASH}..."])
             add_to_csv(self.CSV_FILE, [f"settings: {self.SETTINGS}"])
-            add_to_csv(self.CSV_FILE, ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome"])
+            add_to_csv(self.CSV_FILE, self.CSV_HEADER)
             population = self.CHECKPOINT["population"]
             current_goal = Goal(self.CHECKPOINT["goal_str"])
             starting_gen = self.CHECKPOINT["generation"]
@@ -110,7 +111,7 @@ class Simulation:
             _max_genome = population[fitness_list.index(_max)].BINARY_GENOME
 
             print(f"Gen {gen} of {self.SETTINGS_HASH}: max = {_max}, avg = {_avg}")
-            add_to_csv(self.CSV_FILE, [gen, _max, _avg, _norm, _max_genome])
+            add_to_csv(self.CSV_FILE, [gen, _max, _avg, _norm, _max_genome, current_goal.GOAL_STR])
 
             selection_weights = self.calculate_selection_weights(fitness_list)
             new_population = []

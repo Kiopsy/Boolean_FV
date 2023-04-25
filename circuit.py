@@ -2,9 +2,6 @@ import itertools
 from constants import OPERATIONS, GATE_TYPE_SZ, GATE_ADDR_SZ, NUM_INPUTS
 from goal import Goal
 
-# B = 124 
-# B =  317
-
 # A logic circuit
 class Circuit:
 	def __init__(self, binary_genome:str, silent=True) -> None:
