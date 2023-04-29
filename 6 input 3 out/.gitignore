@@ -1,0 +1,9 @@
+# directories
+saves/
+loads/
+__pycache__/
+
+# files
+.DS_Store
+
+!.gitignore
