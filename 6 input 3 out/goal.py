@@ -31,7 +31,7 @@ class Goal:
                 for i in range(len(variables)):
                     eval_str = eval_str.replace(variables[i], str(input_set[i]))
                 
-                value.append(eval(eval_str))
+                value.append(int(eval(eval_str)))
             
             self.truth_table[input_set] = value
     

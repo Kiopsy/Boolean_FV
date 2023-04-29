@@ -3,10 +3,10 @@ from helpers import consistent_hash
 
 # Define possible boolean goal functions to run the simulation on
 GOALS = {
- "G1" : "((x XOR y) OR (z XOR w); (x XOR y) AND (t XOR u); (z XOR w) AND (t XOR u))",
- "G2" : "((x XOR y) AND (z XOR w); (x XOR y) OR (t XOR u); (z XOR w) AND (t XOR u))",
- "G3" : "((x XOR y) AND (z XOR w); (x XOR y) AND (t XOR u); (z XOR w) OR (t XOR u))",
- "G4" : "((x XOR y) AND (z XOR w); (x XOR y) AND (t XOR u); (z XOR w) AND (t XOR u))",
+ "G1" : "(x XOR y) OR (z XOR w); (x XOR y) AND (t XOR u); (z XOR w) AND (t XOR u)",
+ "G2" : "(x XOR y) AND (z XOR w); (x XOR y) OR (t XOR u); (z XOR w) AND (t XOR u)",
+ "G3" : "(x XOR y) AND (z XOR w); (x XOR y) AND (t XOR u); (z XOR w) OR (t XOR u)",
+ "G4" : "(x XOR y) AND (z XOR w); (x XOR y) AND (t XOR u); (z XOR w) AND (t XOR u)",
 }
 
 # Define the allowed operations
@@ -32,7 +32,7 @@ GATE_TYPE_SZ = 2
 
 class SimulationSettings:
     # If the goal is being changed or not
-    CHANGING_GOAL = True
+    CHANGING_GOAL = False
 
     # Define the maximum number of gates in the circuit
     # From the paper, circuits were composed of NAND gands
@@ -63,7 +63,7 @@ class SimulationSettings:
 
     # goals
     INIT_GOAL = GOALS["G2"]
-    GOALS = [GOALS["G1"], GOALS["G2"], GOALS["G3"]]
+    GOALS = [GOALS["G1"], GOALS["G2"], GOALS["G3"], GOALS["G4"]]
 
     def __repr__(self):
         class_vars = {k: v for k, v in vars(SimulationSettings).items() if not k.startswith("__")}

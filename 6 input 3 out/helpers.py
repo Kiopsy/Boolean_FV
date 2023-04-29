@@ -15,7 +15,7 @@ def add_to_csv(file_path, data):
         writer = csv.writer(file)
         writer.writerow(data)
 
-def create_graph(gates, output, N = 4):
+def create_graph(gates, outputs, N = 6):
     
     TARGET = "*"
     GATE = "n"
@@ -42,16 +42,20 @@ def create_graph(gates, output, N = 4):
     G = nx.DiGraph()
 
     # Add nodes
-    inputs = [chr(i) for i in range(ord('z') - N + 1, ord('z') + 1)] # TODO
+    inputs = [chr(i) for i in range(ord('z') - N + 1, ord('z') + 1)] # TODO 
     nodes = inputs + [f"{GATE}_{i+len(inputs)}" for i in range(len(gates))]
-    nodes[output] = TARGET # output is target node
+    for i, output in enumerate(outputs):
+        nodes[output] = f"{TARGET}_{i}" # output is target node
     G.add_nodes_from(nodes)
 
     # Add edges
     edge_list = []
     for i, (gate, input1_address, input2_address) in enumerate(gates):
-        edge_list.append((nodes[input1_address], nodes[i+len(inputs)]))
-        edge_list.append((nodes[input2_address], nodes[i+len(inputs)]))
+        try:
+            edge_list.append((nodes[input1_address], nodes[i+len(inputs)]))
+            edge_list.append((nodes[input2_address], nodes[i+len(inputs)]))
+        except Exception as e:
+            print(i, e)
     G.add_edges_from(edge_list)
 
     # Remove gates that should not exist
@@ -73,7 +77,13 @@ def create_graph(gates, output, N = 4):
                 pos[node] = (pos[node][0], 1)
             except Exception as e:
                 print(e)
-        pos[TARGET] = (pos[TARGET][0], -1)
+
+        for i in range(len(outputs)):
+            try:
+                pos[f"{TARGET}_{i}"] = (pos[f"{TARGET}_{i}"][0], -1)
+            except Exception as e:
+                print(e)
+
 
     
     node_color, node_shape = style_nodes(nodes)

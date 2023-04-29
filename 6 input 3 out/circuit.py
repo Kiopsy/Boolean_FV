@@ -39,20 +39,12 @@ class Circuit:
 		else:
 			return None
 			
-	def run_circuit(self, inputs) -> int:
-		addr_to_output = dict()
-		for i, val in enumerate(inputs):
-			addr_to_output[i] = [val]
-
-		for i, gate in enumerate(self.gates):
-			addr_to_output[i + len(inputs)] = gate
-
-		self.sprint("Gates:", addr_to_output)
-		self.sprint("Output Genes:", self.output_genes)
+	def run_circuit(self, inputs) -> list[int]:
+		
 
 		visited = set()
 
-		def dfs(gate_index) -> list[int]:
+		def dfs(gate_index) -> int:
 
 			# if we have been to this index, return -1, meaning that this circuit potentially does not work
 			if gate_index in visited:
@@ -93,6 +85,16 @@ class Circuit:
 		outputs = []
 
 		for output_gene in self.output_genes:
+			addr_to_output = dict()
+			for i, val in enumerate(inputs):
+				addr_to_output[i] = [val]
+
+			for i, gate in enumerate(self.gates):
+				addr_to_output[i + len(inputs)] = gate
+
+			self.sprint("Gates:", addr_to_output)
+			self.sprint("Output Genes:", self.output_genes)
+			
 			try:
 				output = dfs(output_gene)
 			except Exception as e:
