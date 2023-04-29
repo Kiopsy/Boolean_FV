@@ -14,13 +14,14 @@ class Simulation:
         self.SAVES_DIR = f"./saves/{self.SETTINGS_HASH}"
         self.CSV_FILE = f"{self.SAVES_DIR}/data_{datetime.datetime.now().strftime('%H_%M')}.csv"
         self.CSV_HEADER = ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome", "Goal"]
+        self.i = 0
         
     # Change the goal every E = 20 generations
     def get_goal(self, goal):
         if self.SETTINGS.CHANGING_GOAL and random.random() < 1/self.SETTINGS.G:
             goals = [Goal(goal_str) for goal_str in self.SETTINGS.GOALS]
-            goals.remove(goal)
-            goal = random.choice(goals)
+            self.i = (self.i + 1) % len(goals)
+            goal = goals[self.i]
             print(f"Goal has changed to {goal}")
     
         return goal

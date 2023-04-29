@@ -32,7 +32,7 @@ GATE_TYPE_SZ = 2
 
 class SimulationSettings:
     # If the goal is being changed or not
-    CHANGING_GOAL = False
+    CHANGING_GOAL = True
 
     # Define the maximum number of gates in the circuit
     # From the paper, circuits were composed of NAND gands
@@ -51,7 +51,7 @@ class SimulationSettings:
     L = 10**5
 
     # expected number of generations until the goal is changed
-    G = 5
+    G = 20
 
     # Define the probability of a gene mutation
     Pm = 0.7 / B
@@ -62,8 +62,8 @@ class SimulationSettings:
     NUM_INPUTS = NUM_INPUTS # TODO: fix this
 
     # goals
-    INIT_GOAL = GOALS["G2"]
-    GOALS = [GOALS["G1"], GOALS["G2"], GOALS["G3"], GOALS["G4"]]
+    INIT_GOAL = GOALS["G1"]
+    GOALS = [GOALS["G4"], GOALS["G2"], GOALS["G4"], GOALS["G3"], GOALS["G4"], GOALS["G1"]]
 
     def __repr__(self):
         class_vars = {k: v for k, v in vars(SimulationSettings).items() if not k.startswith("__")}
