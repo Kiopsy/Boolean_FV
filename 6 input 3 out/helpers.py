@@ -76,13 +76,13 @@ def create_graph(gates, outputs, N = 6):
             try:
                 pos[node] = (pos[node][0], 1)
             except Exception as e:
-                print(e)
+                print(f"No input {node}; {node} is an output: {e}")
 
         for i in range(len(outputs)):
             try:
                 pos[f"{TARGET}_{i}"] = (pos[f"{TARGET}_{i}"][0], -1)
             except Exception as e:
-                print(e)
+                print(f"Output at index {i} overwrites a previous output")
 
 
     

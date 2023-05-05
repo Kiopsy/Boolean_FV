@@ -1,4 +1,5 @@
 import itertools
+import pdb
 
 class Goal: 
 
@@ -15,7 +16,6 @@ class Goal:
         # set formatted string to the constsant
         self.GOAL_STR = goal_str
 
-        
         variables = list(set([char for char in goal_str if char.islower()]))
         variables.sort(key = lambda x: goal_str.find(x))
 

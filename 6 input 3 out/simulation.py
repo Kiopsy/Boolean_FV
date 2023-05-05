@@ -4,6 +4,7 @@ from goal import Goal
 from helpers import add_to_csv, consistent_hash
 from constants import SimulationSettings, SAVE_FREQUENCY
 import pickle, os, random, datetime
+import pdb
 
 class Simulation:
 

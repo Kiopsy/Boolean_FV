@@ -31,7 +31,9 @@ class Circuit:
 			self.gates.append([gate_type, input1_addr, input2_addr])
 
 		for i in range(NUM_OUTPUTS):
-			self.output_genes.append(int(self.BINARY_GENOME[-GATE_ADDR_SZ:], 2))
+			start_idx = len(self.BINARY_GENOME) - GATE_ADDR_SZ * (i + 1)
+			output_gene = int(self.BINARY_GENOME[start_idx:start_idx+GATE_ADDR_SZ], 2)
+			self.output_genes.append(output_gene)
 	
 	def get_gate_type(self, binary_string: str) -> str:
 		if binary_string == "00":
@@ -107,16 +109,28 @@ class Circuit:
 	# Returns the fitness of a circuit defined as the fraction of correct outputs over all possible inputs
     # Fitness defined in https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1000206&type=self.sprintable
 	def fitness(self, goal: Goal) -> float:
-		# TODO: Set an extra penalty for non-effective (no direct path to output) gates
 		inputs = list(itertools.product([0, 1], repeat=NUM_INPUTS)) #TODO
 		eval_score = 0
 
 		for input_set in inputs:
 			goal_output, circuit_output = goal[input_set], self.run_circuit(input_set)
-			eval_score += (goal_output == circuit_output)
+			# if len(set(circuit_output)) != 1:
+			# 	print(f"output genes: {self.output_genes}")
+			# 	print(circuit_output) 
+			eval_score += int(goal_output == circuit_output)
+		
+		return eval_score / len(inputs) 
 
-		return eval_score / len(inputs)
+		for input_set in inputs:
+			goal_output, circuit_output = goal[input_set], self.run_circuit(input_set)
+			# if len(set(circuit_output)) != 1:
+			# 	print(f"output genes: {self.output_genes}")
+			# 	print(circuit_output) 
+			for i in range(3):
+				eval_score += int(goal_output[i] == circuit_output[i])
+		return eval_score / (len(inputs) * 3)
 	
+
 	def get_truth_table(self) -> dict[tuple[NUM_INPUTS], int]:
 		inputs = list(itertools.product([1, 0], repeat=NUM_INPUTS))
 		table = dict()
