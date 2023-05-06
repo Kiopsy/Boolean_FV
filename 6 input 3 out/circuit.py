@@ -1,6 +1,7 @@
 import itertools
 from constants import OPERATIONS, GATE_TYPE_SZ, GATE_ADDR_SZ, NUM_INPUTS, NUM_OUTPUTS
 from goal import Goal
+from collections import deque
 
 # A logic circuit
 class Circuit:
@@ -43,10 +44,11 @@ class Circuit:
 			
 	def run_circuit(self, inputs) -> list[int]:
 		
-
 		visited = set()
+		seen = set()
 
 		def dfs(gate_index) -> int:
+			seen.add(gate_index)
 
 			# if we have been to this index, return -1, meaning that this circuit potentially does not work
 			if gate_index in visited:
@@ -106,29 +108,98 @@ class Circuit:
 
 		return outputs 
 	
+	def find_from_output(self):
+		visited = set()
+		queue = deque()
+
+		addr_to_output = dict()
+		for i in range(6):
+			addr_to_output[i] = [1]
+
+		for i, gate in enumerate(self.gates):
+			addr_to_output[i + 6] = gate
+
+		# Add output genes to the queue
+		for output_gene in self.output_genes:
+			queue.append(output_gene)
+
+		while queue:
+			gate_index = queue.popleft()
+
+			# if we have been to this index, skip it
+			if gate_index in visited:
+				continue
+
+			visited.add(gate_index)
+
+			self.sprint("Look for gate:", gate_index)
+
+			# try to unpack the gate list seen at this index if there's a gate list
+			try:           
+				x, *inputs_addresses = addr_to_output[gate_index]
+				gate = val = x
+			except KeyError as e:
+				raise Exception(f"No gate with index {e}")
+			
+			if x != None:
+				# add input gates to the queue
+				for input_addr in inputs_addresses:
+					queue.append(input_addr)
+
+		return visited
+	
 	# Returns the fitness of a circuit defined as the fraction of correct outputs over all possible inputs
     # Fitness defined in https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1000206&type=self.sprintable
 	def fitness(self, goal: Goal) -> float:
 		inputs = list(itertools.product([0, 1], repeat=NUM_INPUTS)) #TODO
 		eval_score = 0
 
-		for input_set in inputs:
-			goal_output, circuit_output = goal[input_set], self.run_circuit(input_set)
-			# if len(set(circuit_output)) != 1:
-			# 	print(f"output genes: {self.output_genes}")
-			# 	print(circuit_output) 
-			eval_score += int(goal_output == circuit_output)
+		# for input_set in inputs:
+		# 	goal_output, circuit_output = goal[input_set], self.run_circuit(input_set)
+		# 	# if len(set(circuit_output)) != 1:
+		# 	# 	print(f"output genes: {self.output_genes}")
+		# 	# 	print(circuit_output) 
+		# 	eval_score += int(goal_output == circuit_output)
 		
-		return eval_score / len(inputs) 
+		# return eval_score / len(inputs) 
+		if len(set(self.output_genes)) != 3 or any(n < 6 for n in self.output_genes):
+			eval_score -= 100
+		
+		for i, gate in enumerate(self.gates):
+			gate_type, input1_addr, input2_addr = gate
 
+			if input1_addr in self.output_genes or input2_addr in self.output_genes:
+				# print(i, gate)
+				eval_score -= .02
+				
+				# return 0
+
+		seen = self.find_from_output()
+		for i in range(6):
+			if i not in seen:
+				# return 0
+				eval_score -= .02
+			else:
+				seen.remove(i)
+
+		target_gates_upper = 22
+		target_gate_lower = 17
+
+		num_gates = len(seen)
+		if num_gates < target_gate_lower:
+			eval_score -= (target_gate_lower - num_gates) * 0.015
+		elif num_gates > target_gates_upper:
+			eval_score -= (num_gates - target_gates_upper) * 0.2
+		
 		for input_set in inputs:
 			goal_output, circuit_output = goal[input_set], self.run_circuit(input_set)
+
 			# if len(set(circuit_output)) != 1:
 			# 	print(f"output genes: {self.output_genes}")
 			# 	print(circuit_output) 
 			for i in range(3):
-				eval_score += int(goal_output[i] == circuit_output[i])
-		return eval_score / (len(inputs) * 3)
+				eval_score += (int(goal_output[i] == circuit_output[i]) / (len(inputs) * 3))
+		return eval_score
 	
 
 	def get_truth_table(self) -> dict[tuple[NUM_INPUTS], int]:

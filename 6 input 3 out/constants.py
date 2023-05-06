@@ -32,14 +32,14 @@ GATE_TYPE_SZ = 2
 
 class SimulationSettings:
     # If the goal is being changed or not
-    CHANGING_GOAL = False
+    CHANGING_GOAL = True
 
     # Define the maximum number of gates in the circuit
     # From the paper, circuits were composed of NAND gands
     MAX_GATES = 26
 
     # Define the population individuals 
-    N_pop = 5000
+    N_pop = 2000
 
     # Define the length of the binary genome in bits 
     B = (GATE_TYPE_SZ + 2 * GATE_ADDR_SZ) * MAX_GATES + GATE_ADDR_SZ * NUM_OUTPUTS
@@ -50,11 +50,20 @@ class SimulationSettings:
     # Define the number of generations to evolve the population
     L = 10**5
 
+    ELITE_SIZE = 500
+
+    MISSING_INPUT_PENALTY = .02
+    OUTPUT_HAS_OUTPUT_PENALTY = .02
+
+    MISSING_GATE_NUMBER_PENALTY = .02
+
+    SELECTING_BEST_FIT = False
+
     # expected number of generations until the goal is changed
     G = 20
 
     # Define the probability of a gene mutation
-    Pm = 0.7 / 104
+    Pm = 0.7 / 200
 
     t = 30
 
@@ -62,8 +71,8 @@ class SimulationSettings:
     NUM_INPUTS = NUM_INPUTS # TODO: fix this
 
     # goals
-    INIT_GOAL = GOALS["G1"]
-    GOALS = [GOALS["G1"], GOALS["G2"], GOALS["G4"], GOALS["G3"], GOALS["G4"], GOALS["G1"]]
+    INIT_GOAL = GOALS["G2"]
+    GOALS = [GOALS["G4"], GOALS["G2"], GOALS["G4"], GOALS["G3"], GOALS["G4"], GOALS["G1"]]
 
     def __repr__(self):
         class_vars = {k: v for k, v in vars(SimulationSettings).items() if not k.startswith("__")}

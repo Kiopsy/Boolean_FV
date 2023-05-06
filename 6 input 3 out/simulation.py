@@ -46,6 +46,10 @@ class Simulation:
         parents = random.choices(population, weights=selection_weights, k=2)
         return [p.BINARY_GENOME for p in parents]
 
+    # def select_parents(self, population: list[Circuit]) -> list[str]:
+    #     parents = random.choices(population, k=2)
+    #     return [p.BINARY_GENOME for p in parents]
+
     # Mutation
     def mutate(self, genome: str) -> str:
         int_genome = [int(c) for c in genome]
@@ -115,10 +119,20 @@ class Simulation:
             print(f"Gen {gen} of {self.SETTINGS_HASH}: max = {_max}, avg = {_avg}")
             add_to_csv(self.CSV_FILE, [gen, _max, _avg, _norm, _max_genome, current_goal.GOAL_STR])
 
+            sorted_population = [circuit for circuit, _ in sorted(zip(population, fitness_list), key=lambda pair: pair[1], reverse=True)]
+
+            # Preserve the elite individuals
+            new_population = sorted_population[:self.SETTINGS.ELITE_SIZE]
+
+             # Calculate the number of high-fitness circuits to replicate
+            num_high_fitness_circuits = len(population) // 4
+            high_fitness_population = sorted_population[:num_high_fitness_circuits]
+
             selection_weights = self.calculate_selection_weights(fitness_list)
-            new_population = []
-            for _ in range(self.SETTINGS.N_pop//2):
+
+            while len(new_population) < self.SETTINGS.N_pop:
                 parents = self.select_parents(population, selection_weights)
+                # parents = self.select_parents(high_fitness_population)
                 children = self.reproduce(parents)
                 new_population.extend(children)
             population = new_population
