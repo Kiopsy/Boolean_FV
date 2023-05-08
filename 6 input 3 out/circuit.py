@@ -161,42 +161,43 @@ class Circuit:
 		# 	# 	print(circuit_output) 
 		# 	eval_score += int(goal_output == circuit_output)
 		
-		# return eval_score / len(inputs) 
-		if len(set(self.output_genes)) != 3 or any(n < 6 for n in self.output_genes):
-			eval_score -= 100
-		
-		for i, gate in enumerate(self.gates):
-			gate_type, input1_addr, input2_addr = gate
+		penalty = False
+		if penalty:
+			# return eval_score / len(inputs) 
+			if len(set(self.output_genes)) != 3 or any(n < 6 for n in self.output_genes):
+				eval_score -= 1
+			
+			for i, gate in enumerate(self.gates):
+				gate_type, input1_addr, input2_addr = gate
 
-			if input1_addr in self.output_genes or input2_addr in self.output_genes:
-				# print(i, gate)
-				eval_score -= .02
-				
-				# return 0
+				if input1_addr in self.output_genes or input2_addr in self.output_genes:
+					# print(i, gate)
+					eval_score -= .02
+					
+					# return 0
 
-		seen = self.find_from_output()
-		for i in range(6):
-			if i not in seen:
-				# return 0
-				eval_score -= .02
-			else:
-				seen.remove(i)
+			# Penalizing
+			seen = self.find_from_output()
+			for i in range(6):
+				if i not in seen:
+					# return 0
+					eval_score -= .02
+				else:
+					seen.remove(i)
 
-		target_gates_upper = 22
-		target_gate_lower = 17
+			target_gates_upper = 22
+			target_gate_lower = 17
 
-		num_gates = len(seen)
-		if num_gates < target_gate_lower:
-			eval_score -= (target_gate_lower - num_gates) * 0.015
-		elif num_gates > target_gates_upper:
-			eval_score -= (num_gates - target_gates_upper) * 0.2
+			# Penalizing gates for not reaching a solid 
+			num_gates = len(seen)
+			if num_gates < target_gate_lower:
+				eval_score -= (target_gate_lower - num_gates) * 0.02
+			elif num_gates > target_gates_upper:
+				eval_score -= (num_gates - target_gates_upper) * 0.2
 		
 		for input_set in inputs:
 			goal_output, circuit_output = goal[input_set], self.run_circuit(input_set)
 
-			# if len(set(circuit_output)) != 1:
-			# 	print(f"output genes: {self.output_genes}")
-			# 	print(circuit_output) 
 			for i in range(3):
 				eval_score += (int(goal_output[i] == circuit_output[i]) / (len(inputs) * 3))
 		return eval_score

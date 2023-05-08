@@ -30,9 +30,29 @@ GATE_ADDR_SZ = 5
 # The length of a gate type in binary
 GATE_TYPE_SZ = 2
 
+"""
+# Non-Constraining Tests
+"NC_E_EXP_FG"
+"NC_E_EXP_MVG"
+"NC_E_B_FG"
+"NC_E_B_MVG"
+"NC_NE_EXP_FG"
+"NC_NE_EXP_MVG"
+"NC_NE_B_FG"
+"NC_NE_B_MVG"
+
+# Constraining Tests (Penalize gate or not)
+"C_E_EXP_FG_PEN"
+"C_E_EXP_MVG_PEN"
+"C_E_EXP_FG"
+"C_E_EXP_MVG"
+"""
+
 class SimulationSettings:
+    EXPERIMENT_STR = "NC_E_EXP_FG"
+
     # If the goal is being changed or not
-    CHANGING_GOAL = True
+    CHANGING_GOAL = False
 
     # Define the maximum number of gates in the circuit
     # From the paper, circuits were composed of NAND gands
@@ -50,15 +70,6 @@ class SimulationSettings:
     # Define the number of generations to evolve the population
     L = 10**5
 
-    ELITE_SIZE = 500
-
-    MISSING_INPUT_PENALTY = .02
-    OUTPUT_HAS_OUTPUT_PENALTY = .02
-
-    MISSING_GATE_NUMBER_PENALTY = .02
-
-    SELECTING_BEST_FIT = False
-
     # expected number of generations until the goal is changed
     G = 20
 
@@ -70,8 +81,12 @@ class SimulationSettings:
     # Define the number of inputs to the goal function & circuit
     NUM_INPUTS = NUM_INPUTS # TODO: fix this
 
+    CONSTRAINING = False
+    
+    ELITE_SIZE = 500
+
     # goals
-    INIT_GOAL = GOALS["G2"]
+    INIT_GOAL = GOALS["G1"]
     GOALS = [GOALS["G4"], GOALS["G2"], GOALS["G4"], GOALS["G3"], GOALS["G4"], GOALS["G1"]]
 
     def __repr__(self):

@@ -5,8 +5,14 @@ from constants import NUM_INPUTS
 
 
 def print_table(table, table2 = None):
+    # total_pairs = len(table)
+    # equal_pairs = 0
     for i, (k, v) in enumerate(table.items()):
+        # if table2 and table2[k] == v:
+        #     equal_pairs += 1
         print(f"{k}: {v}{'*' if table2 and table2[k] != v else ''}   ", end = "" if (i+1) % len(k) else "\n")
+
+    # print(f"Fraction correct: {equal_pairs} / {total_pairs}; {equal_pairs/total_pairs}")
 
 def main():
     
@@ -20,12 +26,12 @@ def main():
 
     print(c.find_from_output())
 
-    GOAL_STR = "(x XOR y) OR (z XOR w); (x XOR y) AND (t XOR u); (z XOR w) AND (t XOR u)"# input("Goal (optional): ").strip()
+    GOAL_STR = input("Goal (optional): ").strip()
 
     GOAL_TRUTH_TABLE = Goal(GOAL_STR).truth_table if GOAL_STR else None
 
     print("Goal truth table")
-    print_table(GOAL_TRUTH_TABLE)
+    # print_table(GOAL_TRUTH_TABLE)
 
     print()
     input("CIRCUIT TRUTH TABLE: [enter]")

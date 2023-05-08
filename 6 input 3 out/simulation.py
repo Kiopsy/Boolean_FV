@@ -1,7 +1,7 @@
 from circuit import Circuit
 import numpy as np
 from goal import Goal
-from helpers import add_to_csv, consistent_hash
+from helpers import add_to_csv, consistent_hash, compute_q
 from constants import SimulationSettings, SAVE_FREQUENCY
 import pickle, os, random, datetime
 import pdb
@@ -14,7 +14,7 @@ class Simulation:
         self.SETTINGS_HASH = consistent_hash(str(self.SETTINGS))
         self.SAVES_DIR = f"./saves/{self.SETTINGS_HASH}"
         self.CSV_FILE = f"{self.SAVES_DIR}/data_{datetime.datetime.now().strftime('%H_%M')}.csv"
-        self.CSV_HEADER = ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome", "Goal"]
+        self.CSV_HEADER = ["Gen", "Max Fitness", "Average Fitness", "Normalized Fitness", "Max Fitness Genome", "Max Q", "Avg Q", "Q Genome" "Goal"]
         self.i = 0
         
     # Change the goal every E = 20 generations
@@ -111,13 +111,19 @@ class Simulation:
             current_goal = self.get_goal(current_goal)
             fitness_list = self.calculate_fitness(population, current_goal)
 
+            q_list = [compute_q(c) for c in population]
+
+            
             _max = max(fitness_list)
             _avg = sum(fitness_list)/len(fitness_list)
             _norm = (_max - _avg) / (1 - _avg)
             _max_genome = population[fitness_list.index(_max)].BINARY_GENOME
+            _max_q = max(q_list)
+            _avg_q = sum(q_list)/len(population)
+            _max_q_genome = population[q_list.index(_max_q)].BINARY_GENOME
 
-            print(f"Gen {gen} of {self.SETTINGS_HASH}: max = {_max}, avg = {_avg}")
-            add_to_csv(self.CSV_FILE, [gen, _max, _avg, _norm, _max_genome, current_goal.GOAL_STR])
+            print(f"{self.SETTINGS.EXPERIMENT_STR}: Gen {gen} of {self.SETTINGS_HASH}: max = {_max}, avg = {_avg}")
+            add_to_csv(self.CSV_FILE, [gen, _max, _avg, _norm, _max_genome, _max_q, _avg_q, _max_q_genome, current_goal.GOAL_STR])
 
             sorted_population = [circuit for circuit, _ in sorted(zip(population, fitness_list), key=lambda pair: pair[1], reverse=True)]
 
